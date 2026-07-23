@@ -18,7 +18,7 @@
 
 | Ссылка на проект | Описание проекта | 
 |---|---|
-| 💡 [Case #1 - Order Base](https://github.com/Kucharavaya/portfolio/edit/main/SQL/Case%20%231%20-%20Order%20Base/Order_Base.md)  | Этот файл содержит 20 заданий по SQL, начиная от простых (SELECT, WHERE) до сложных (JOIN, подзапросы, GROUP BY, HAVING, TOP/FETCH, ORDER BY).  Каждый вопрос имеет условие, предложенный SQL-скрипт (иногда с вариантами), и таблицу с результатами (Решение:). | 
+| 💡 [Case #1 - Order Base](https://github.com/Kucharavaya/portfolio/blob/main/SQL/Case%20%231%20-%20Order%20Base/Order_Base.md)  | Этот файл содержит 20 заданий по SQL, начиная от простых (SELECT, WHERE) до сложных (JOIN, подзапросы, GROUP BY, HAVING, TOP/FETCH, ORDER BY).  Каждый вопрос имеет условие, предложенный SQL-запрос (иногда с вариантами), и таблицу с результатами. | 
  
 
 ***
