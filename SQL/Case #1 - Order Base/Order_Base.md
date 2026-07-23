@@ -90,7 +90,7 @@ SELECT
     *
 FROM ORDERS
 WHERE ORDER_DATE >= '2007-12-31'
-    AND ORDER_DATE =< '2008-02-01
+    AND ORDER_DATE <= '2008-02-01'
 ```
 Вариант #2 (с использованием оператора BETWEEN)
 ```SQL
@@ -267,7 +267,7 @@ GROUP BY REP_OFFICE
 ```SQL
 SELECT
     MFR_ID,
-    ROUND(AVG(PRICE), 2)) средняя_цена
+    ROUND(AVG(PRICE), 2) средняя_цена
 FROM PRODUCTS
 GROUP BY MFR_ID
 ```
