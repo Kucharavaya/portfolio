@@ -1,0 +1,361 @@
+[
+	{
+		"testName": "Валидный BLACK",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5,
+		"expectedStatus": 200,
+		"expectedType": "BLACK",
+		"expectedName": "MIKHAIL",
+		"expectedAge": 17.5
+	},
+	{
+		"testName": "Валидный POLAR",
+		"bear_type": "POLAR",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5,
+		"expectedStatus": 200,
+		"expectedType": "POLAR",
+		"expectedName": "MIKHAIL",
+		"expectedAge": 17.5
+	},
+	{
+		"testName": "Валидный BROWN",
+		"bear_type": "BROWN",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5,
+		"expectedStatus": 200,
+		"expectedType": "BROWN",
+		"expectedName": "MIKHAIL",
+		"expectedAge": 17.5
+	},
+	{
+		"testName": "Валидный GUMMY",
+		"bear_type": "GUMMY",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5,
+		"expectedStatus": 200,
+		"expectedType": "GUMMY",
+		"expectedName": "MIKHAIL",
+		"expectedAge": 17.5
+	},
+	{
+		"testName": "Пустой bear_type (ожидается ошибка)",
+		"bear_type": "",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Невалидный PANDA (ожидается ошибка)",
+		"bear_type": "PANDA",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5,
+		"expectedStatus": 404,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Невалидный black (ожидается ошибка)",
+		"bear_type": "black",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Спецсимволы в bear_type (ожидается ошибка)",
+		"bear_type": "~!@#$%^&*()|\/*-+.?,<>;:",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Числа в bear_type (ожидается ошибка)",
+		"bear_type": "123456",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Кириллица в нижнем регистре (ожидается ошибка)",
+		"bear_type": "полярный",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Кириллица в верхнем регистре (ожидается ошибка)",
+		"bear_type": "ПОЛЯРНЫЙ",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Пробел в bear_type (ожидается ошибка)",
+		"bear_type": " ",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Пустой bear_name (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": "",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedName": null,
+		"expectedType": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Имя с апострофом",
+		"bear_type": "BLACK",
+		"bear_name": "d'Artagnan",
+		"bear_age": 17.5,
+		"expectedStatus": 200,
+		"expectedType": "BLACK",
+		"expectedName": "d'Artagnan",
+		"expectedAge": 17.5
+	},
+	{
+		"testName": "Имя с дефисом",
+		"bear_type": "BLACK",
+		"bear_name": "Mary-Jane",
+		"bear_age": 17.5,
+		"expectedStatus": 200,
+		"expectedType": "BLACK",
+		"expectedName": "Mary-Jane",
+		"expectedAge": 17.5
+	},
+	{
+		"testName": "Короткое имя",
+		"bear_type": "BLACK",
+		"bear_name": "Jo",
+		"bear_age": 17.5,
+		"expectedStatus": 200,
+		"expectedType": "BLACK",
+		"expectedName": "Jo",
+		"expectedAge": 17.5
+	},
+	{
+		"testName": "Составное имя",
+		"bear_type": "BLACK",
+		"bear_name": "Mary Ann",
+		"bear_age": 17.5,
+		"expectedStatus": 200,
+		"expectedType": "BLACK",
+		"expectedName": "Mary Ann",
+		"expectedAge": 17.5
+	},
+	{
+		"testName": "Имя кириллицей в верхнем регистре (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": "АЛЕКСЕЙ",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedName": null,
+		"expectedType": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Имя с цифрами (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": "123456",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedName": null,
+		"expectedType": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Имя указав спецсимволы (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": "~!@#$%^&*()|\/*-+.?,<>;:",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedName": null,
+		"expectedType": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Имя указав пробел (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": " ",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedName": null,
+		"expectedType": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Имя с emoji (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": "🐻",
+		"bear_age": 17.5,
+		"expectedStatus": 400,
+		"expectedName": null,
+		"expectedType": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Имя с одной буквой",
+		"bear_type": "BLACK",
+		"bear_name": "L",
+		"bear_age": 17.5,
+		"expectedStatus": 200,
+		"expectedType": "BLACK",
+		"expectedName": "L",
+		"expectedAge": 17.5
+	},
+	{
+		"testName": "Длинное имя (более 2500 символов)",
+		"bear_type": "BLACK",
+		"longName": true,
+		"bear_age": 17.5,
+		"expectedStatus": 200,
+		"expectedType": "BLACK",
+		"expectedAge": 17.5
+	},
+	{
+		"testName": "Целое число в bear_age",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17,
+		"expectedStatus": 200,
+		"expectedType": "BLACK",
+		"expectedName": "MIKHAIL",
+		"expectedAge": 17.0
+	},
+	{
+		"testName": "Пустой bear_age (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": null,
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Целое число (0)",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 0,
+		"expectedStatus": 200,
+		"expectedType": "BLACK",
+		"expectedName": "MIKHAIL",
+		"expectedAge": 0.0
+	},
+	{
+		"testName": "Целое число (100)",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 100,
+		"expectedStatus": 200,
+		"expectedType": "BLACK",
+		"expectedName": "MIKHAIL",
+		"expectedAge": 100.0
+	},
+	{
+		"testName": "Десятичное число (0.01)",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 0.01,
+		"expectedStatus": 200,
+		"expectedType": "BLACK",
+		"expectedName": "MIKHAIL",
+		"expectedAge": 0.01
+	},
+	{
+		"testName": "Отрицательный возраст -0.01 (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": -0.01,
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Десятичное число (99.99)",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 99.99,
+		"expectedStatus": 200,
+		"expectedType": "BLACK",
+		"expectedName": "MIKHAIL",
+		"expectedAge": 99.99
+	},
+	{
+		"testName": "Возраст > 100 (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 100.01,
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Возраст 17.000000005 (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.000000005,
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Возраст с ведущим нулём (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": "017.5",
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Возраст с запятой вместо точки (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": "17,5",
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	},
+	{
+		"testName": "Текст в bear_age (ожидается ошибка)",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": "seventeen",
+		"expectedStatus": 400,
+		"expectedType": null,
+		"expectedName": null,
+		"expectedAge": null
+	}
+]
