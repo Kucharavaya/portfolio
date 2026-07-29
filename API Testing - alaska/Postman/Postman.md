@@ -102,7 +102,7 @@ if (pm.iterationData.get("expectedStatus") == "200") {
 }
 ```
 
-4. Далее, выбираем, запрос который хотим прогнать и добавляем заранее подготовленные тестовые данные (post_data_bear.json)
+4. Далее, выбираем, запрос который хотим прогнать и добавляем заранее подготовленные тестовые данные [(post_data_bear.json)](https://github.com/Kucharavaya/portfolio/blob/main/API%20Testing%20-%20alaska/Postman/post_data_bear.json)
 
 ![alt text](image-1.png)
 
