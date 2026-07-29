@@ -2,7 +2,7 @@
 
 Проверка работы запросов на примере запроса `POST /bear - добавить медведя`
 
-1. Структура коллекции
+## 1. Структура коллекции
 
 ```
 Azshoo-alaska
@@ -28,22 +28,22 @@ Azshoo-alaska
 
 ```
 
-2. Переменные коллекции
+## 2. Переменные коллекции
 
 ![alt text](image.png)
 
-3. Настройка запросов с переменными
+## 3. Настройка запросов с переменными
 
 ### POST /bear - добавить медведя (параметризованный)
 
-3.1. Для удобства названия запросов логируются в консоли Postman. Для этого в PreRequest необходимо добавить следующий скрипт
+#### 3.1. Для удобства названия запросов логируются в консоли Postman. Для этого в PreRequest необходимо добавить следующий скрипт
 
 ```
 var testName = pm.iterationData.get("testName");
 console.log("▶️ Выполняется тест: " + testName);
 ```
 
-3.2. Добавить в PreRequest скрипт для динамической генерации длинной строки
+#### 3.2. Добавить в PreRequest скрипт для динамической генерации длинной строки
 
 ```
 if (pm.iterationData.get("longName") === true) {
@@ -53,7 +53,7 @@ pm.variables.set("bear_name", pm.iterationData.get("bear_name"));
 }
 ```
 
-3.3. Добавить скрипт проверки в PostResponse
+#### 3.3. Добавить скрипт проверки в PostResponse
 
 ```
 var testName = pm.iterationData.get("testName");
@@ -92,7 +92,7 @@ if (pm.iterationData.get("expectedStatus") == "200") {
 }
 ```
 
-3.4. Body запроса raw json:
+#### 3.4. Body запроса raw json:
 
 ```
 {
@@ -102,10 +102,10 @@ if (pm.iterationData.get("expectedStatus") == "200") {
 }
 ```
 
-4. Далее, выбираем, запрос который хотим прогнать и добавляем заранее подготовленные тестовые данные [(post_data_bear.json)](https://github.com/Kucharavaya/portfolio/blob/main/API%20Testing%20-%20alaska/Postman/post_data_bear.json)
+## 4. Далее, выбираем, запрос который хотим прогнать и добавляем заранее подготовленные тестовые данные [(post_data_bear.json)](https://github.com/Kucharavaya/portfolio/blob/main/API%20Testing%20-%20alaska/Postman/post_data_bear.json)
 
 ![alt text](image-1.png)
 
-5. Запускаем коллекцию и видим, что все запросы успешно улетели. При нажатии на сам запрос можем посмотреть данные, которые мы отправляли и убедиться, что ушло именно то, что хотели.
+## 5. Запускаем коллекцию и видим, что все запросы успешно улетели. При нажатии на сам запрос можем посмотреть данные, которые мы отправляли и убедиться, что ушло именно то, что хотели.
 
 ![alt text](image-2.png)
