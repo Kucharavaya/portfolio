@@ -11,6 +11,7 @@
 - [Чек-лист](#title2)
 - [Примеры Тест-кейсов](https://github.com/Kucharavaya/portfolio/blob/main/API%20Testing%20-%20alaska/test_case.md)
 > Полный список ***Тест-кейсов*** можно посмотреть на [Google Таблицы (Google Sheets)](https://docs.google.com/spreadsheets/d/1_q4OM5JkZ0ZgTOp1M75lVsEjI9Bn3aUC/edit?usp=sharing&ouid=105693084772138040478&rtpof=true&sd=true)
+- [Postman](https://github.com/Kucharavaya/portfolio/blob/main/API%20Testing%20-%20alaska/Postman/Postman.md)
 
 ***
 
