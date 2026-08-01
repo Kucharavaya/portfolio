@@ -1,4 +1,4 @@
-# :notebook: Примеры Тест-кейсов
+# :clipboard: Примеры Тест-кейсов
 
 ## 📚 Содержание
 - [Excel/Google Sheets](#title1)

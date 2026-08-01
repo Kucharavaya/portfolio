@@ -1,4 +1,4 @@
-# :notebook: Postman
+# :envelope: Postman
 
 Проверка работы запросов на примере запроса `POST /bear - добавить медведя`
 
