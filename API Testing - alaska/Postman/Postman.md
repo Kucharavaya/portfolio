@@ -30,7 +30,7 @@ Azshoo-alaska
 
 ## 2. Переменные коллекции
 
-![alt text](image.png)
+<img width="846" height="279" alt="image" src="https://github.com/user-attachments/assets/f707899e-6b68-4c79-b778-b87158be1987" />
 
 ## 3. Настройка запросов с переменными
 
