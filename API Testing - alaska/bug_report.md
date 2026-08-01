@@ -2,4 +2,4 @@
 
 ### `POST /bear` - создать медведя c `[bear_type:GUMMY]`
 
-![alt text](bag_report-1.png)
+<img width="1579" height="742" alt="bag_report" src="https://github.com/user-attachments/assets/5a7ffbb4-9432-44e8-85ae-63f2a76f240b" />
