@@ -103,9 +103,8 @@ if (pm.iterationData.get("expectedStatus") == "200") {
 ```
 
 ## 4. Далее, выбираем, запрос который хотим прогнать и добавляем заранее подготовленные тестовые данные [(post_data_bear.json)](https://github.com/Kucharavaya/portfolio/blob/main/API%20Testing%20-%20alaska/Postman/post_data_bear.json)
+<img width="1151" height="693" alt="image-1" src="https://github.com/user-attachments/assets/0bbfa569-33c3-4a5e-b7f8-9cea4827334d" />
 
-![alt text](image-1.png)
 
 ## 5. Запускаем коллекцию и видим, что все запросы успешно улетели. При нажатии на сам запрос можем посмотреть данные, которые мы отправляли и убедиться, что ушло именно то, что хотели.
-
-![alt text](image-2.png)
+<img width="1427" height="723" alt="image-2" src="https://github.com/user-attachments/assets/fb069875-eb46-415e-b0e2-4d2684e1843c" />
