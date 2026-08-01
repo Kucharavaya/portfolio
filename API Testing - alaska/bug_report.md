@@ -1,4 +1,4 @@
-# :beetle: Пример Баг-репорта в JIRA
+# :bug: Пример Баг-репорта в JIRA
 
 ### `POST /bear` - создать медведя c `[bear_type:GUMMY]`
 
