@@ -29,9 +29,9 @@
 
 ## 2. <a id="title2">`TMS/Test IT`.</a>
 > Пример списка **_Тест-кейсов_** в Test IT
+<img width="1650" height="731" alt="image" src="https://github.com/user-attachments/assets/0a608f3b-749a-4010-a7eb-b201e6a07136" />
 
-![Пример списка Тест-кейсов в Test IT](image.png)
 
 ### `POST /bear` - создать медведя c `[bear_type:BLACK]`
+<img width="1826" height="801" alt="image-4" src="https://github.com/user-attachments/assets/2cf0c6b9-60ce-4fa3-a870-1065c91303e9" />
 
-![alt text](image-4.png)
