@@ -7,7 +7,7 @@
 
 ## 1. <a id="title1">`Excel/Google Sheets`.</a>
 
-> Полный список **_Тест-кейсов_** можно посмотреть на [Google Таблицы (Google Sheets)](https://docs.google.com/spreadsheets/d/10hUvu6_IJgQVKPAjx7r2q_4k0RxREr7E/edit?usp=sharing&ouid=105693084772138040478&rtpof=true&sd=true)
+> Полный список **_Тест-кейсов_** можно посмотреть на [Google Таблицы (Google Sheets)](https://docs.google.com/spreadsheets/d/1wMe7C5HrXOkhz7pnoibPdRzdBHaX77eA/edit?usp=sharing&ouid=105693084772138040478&rtpof=true&sd=true)
 
 ---
 
