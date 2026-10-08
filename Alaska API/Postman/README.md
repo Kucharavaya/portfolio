@@ -77,7 +77,7 @@
     └── 📄 TC [1] - Удаление, в БД пусто
 
 ```
-🗂️ Data Files можно взять в файле POST_data (указать ссылку)
+🗂️ Data Files можно взять в файле [POST_data](https://github.com/Kucharavaya/portfolio/tree/main/Alaska%20API/Postman/POST_data)
 
 #### Как это было выполнено
 Коллекция реализована с использованием следующих возможностей Postman:
@@ -98,7 +98,7 @@
 
 ### 📖 <a id="title2">Часть 2: Инструкция по запуску</a>
 #### 1. Сохранение файла:
-- Сохрани файл под именем `Alaska API.postman_collection.json`.
+- Сохрани файл под именем [`Alaska API.postman_collection.json`](https://github.com/Kucharavaya/portfolio/blob/main/Alaska%20API/Postman/Alaska%20API.postman_collection.json).
 
 #### 2. Импорт в Postman:
 - Перетащи файл `Alaska API.postman_collection.json` в окно импорта ***Postman*** или выбери его через файловый менеджер.
