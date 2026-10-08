@@ -1,0 +1,38 @@
+[
+	{
+		"testName": "[bear_name d'Artagnan]",
+		"bear_type": "BLACK",
+		"bear_name": "d'Artagnan",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_name Mary-Jane]",
+		"bear_type": "BLACK",
+		"bear_name": "Mary-Jane",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_name Jo]",
+		"bear_type": "BLACK",
+		"bear_name": "Jo",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_name Mary Ann]",
+		"bear_type": "BLACK",
+		"bear_name": "Mary Ann",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_name L]",
+		"bear_type": "BLACK",
+		"bear_name": "L",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_name строка более 2500 символов]",
+		"bear_type": "BLACK",
+		"longName": true,
+		"bear_age": 17.5
+	}
+]

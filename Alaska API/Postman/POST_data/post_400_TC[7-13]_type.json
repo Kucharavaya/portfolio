@@ -1,0 +1,44 @@
+[
+	{
+		"testName": "[bear_type PANDA]",
+		"bear_type": "PANDA",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_type black]",
+		"bear_type": "black",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_type Спецсимволы]",
+		"bear_type": "~!@#$%^&*()|\/*-+.?,<>;:",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_type Числа]",
+		"bear_type": "123456",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_type Кириллица в нижнем регистре]",
+		"bear_type": "полярный",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_type Кириллица в верхнем регистре]",
+		"bear_type": "ПОЛЯРНЫЙ",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_type Пробел]",
+		"bear_type": "    ",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5
+	}
+]

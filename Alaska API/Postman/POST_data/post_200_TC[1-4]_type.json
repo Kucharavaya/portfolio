@@ -1,0 +1,26 @@
+[
+	{
+		"testName": "[bear_type BLACK]",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_type POLAR]",
+		"bear_type": "POLAR",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_type BROWN]",
+		"bear_type": "BROWN",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_type GUMMY]",
+		"bear_type": "GUMMY",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17.5
+	}
+]

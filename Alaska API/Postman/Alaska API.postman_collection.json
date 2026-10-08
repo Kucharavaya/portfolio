@@ -1,0 +1,3164 @@
+{
+  "info": {
+    "_postman_id": "8917d958-6583-468f-975f-262e953a90ac",
+    "name": "Alaska API",
+    "description": "# 📘 Документация коллекции Postman: Alaska API\n\n## 1\\. Краткое введение\n\n**Alaska API** — это CRUD-сервис для управления медведями (bears) в Аляске. Сервис предоставляет набор REST-эндпоинтов, позволяющих создавать, читать, обновлять и удалять записи о медведях. Каждый медведь описывается JSON-объектом со следующими полями:\n\n``` bash\njson\n{\n  \"bear_id\": 1,\n  \"bear_type\": \"BLACK\",\n  \"bear_name\": \"MIKHAIL\",\n  \"bear_age\": 17.5\n}\n\n ```\n\n**Допустимые значения** **`bear_type`****:** `POLAR`, `BROWN`, `BLACK`, `GUMMY`.\n\nКоллекция Postman создана для **функционального тестирования** всех эндпоинтов API, включая позитивные и негативные сценарии, а также проверки граничных значений. Она позволяет автоматически валидировать ответы сервера, состояние базы данных и обеспечивать изоляцию тестов через механизмы Pre-request Script и Post-condition.\n\n## 2\\. Что было выполнено\n\nВ рамках коллекции реализовано **полное покрытие CRUD-операций**:\n\n| Категория | Количество тестов | Описание |\n| --- | --- | --- |\n| **POST /bear** | 46 тест-кейсов | Создание медведя с валидацией всех полей (`bear_type`, `bear_name`, `bear_age`), проверка дублирования, негативные сценарии |\n| **GET /bear** | 2 тест-кейса | Получение всех записей (в т.ч. из пустой БД) |\n| **GET /bear/:id** | 2 тест-кейса | Получение существующего и несуществующего медведя |\n| **PUT /bear/:id** | 8 тест-кейсов | Обновление всех полей и отдельных полей, негативные сценарии (400/404) |\n| **DELETE /bear/:id** | 3 тест-кейса | Удаление существующего, повторное удаление, удаление несуществующего |\n| **DELETE /bear** | 2 тест-кейса | Удаление всех записей и удаление при пустой БД |\n| **GET /info** | 1 тест-кейс | Проверка отображения документации API |\n\n**Итого: \\~64 тест-кейса**, сгруппированных по методам и типам сценариев (200, 400, 404).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53523068",
+    "_collection_link": "https://go.postman.co/collection/53523068-8917d958-6583-468f-975f-262e953a90ac?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "GET /info: 200 - Документация",
+      "item": [
+        {
+          "name": "GET /info: 200 – Документация отображается",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Проверка статус кода",
+                  "var testName = \"GET /info: Документация отображается\";",
+                  "",
+                  "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "// 2. Проверка тела ответа",
+                  "pm.test(\"Тело ответа — содержит ожидаемый текст\", function () {",
+                  "    pm.expect(pm.response.text()).to.include(\"Welcome to Alaska!\\nThis is CRUD service for bears in alaska.\\nCRUD routes presented with REST naming notation:\\n\\nPOST\\t\\t\\t/bear - create\\nGET\\t\\t\\t/bear - read all bears\\nGET\\t\\t\\t/bear/:id - read specific bear\\nPUT\\t\\t\\t/bear/:id - update specific bear\\nDELETE\\t\\t\\t/bear - delete all bears\\nDELETE\\t\\t\\t/bear/:id - delete specific bear\\n\\nExample of ber json: {\\\"bear_type\\\":\\\"BLACK\\\",\\\"bear_name\\\":\\\"mikhail\\\",\\\"bear_age\\\":17.5}.\\nAvailable types for bears are: POLAR, BROWN, BLACK and GUMMY.\");",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {}
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/info",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "info"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "### GET `/info` — Документация API\n\n- **Метод:** `GET`\n    \n- **URL:** `{{baseUrl}}/info`\n    \n- **Описание:** Возвращает текстовую документацию по работе с сервисом.\n    \n- **Успешный ответ:** `200 OK` с текстом, содержащим описание эндпоинтов."
+    },
+    {
+      "name": "POST /bear",
+      "item": [
+        {
+          "name": "POST /bear: 200 - Успешные сценарии",
+          "item": [
+            {
+              "name": "TC [1-4] – Создать медведя с валидным [bear_type]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var testName = pm.iterationData.get(\"testName\");",
+                      "",
+                      "// 1. Проверка статус кода",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "// 2. Проверка тела ответа (ID)",
+                      "let bearId;",
+                      "pm.test(\"Тело ответа представляет собой валидный bear_id (integer)\", function () {",
+                      "    const responseText = pm.response.text().trim();",
+                      "    pm.expect(responseText).to.match(/^\\d+$/, \"Ответ не является допустимым целочисленным ID\");",
+                      "    bearId = responseText;",
+                      "    pm.environment.set(\"bear_id\", bearId);",
+                      "});",
+                      "",
+                      "// 3. Дополнительная проверка: GET /bear/:id и сравнение с телом POST запроса",
+                      "pm.test(\"Проверка создания медведя с помощью GET.\", function () {",
+                      "    const postPayload = JSON.parse(pm.request.body.raw);",
+                      "    const currentBearId = pm.environment.get(\"bear_id\");",
+                      "    ",
+                      "    pm.sendRequest({",
+                      "        url: `${pm.variables.get(\"baseUrl\")}/bear/${currentBearId}`,",
+                      "        method: 'GET',",
+                      "        header: { 'Content-Type': 'application/json' }",
+                      "    }, function (err, res) {",
+                      "        pm.expect(err).to.be.null;",
+                      "        pm.expect(res).to.have.status(200);",
+                      "        ",
+                      "        const getPayload = res.json();",
+                      "        ",
+                      "        pm.test(\"Тело ответа на GET-запрос совпадает с телом POST-запроса.\", function () {",
+                      "            pm.expect(getPayload.bear_id).to.eql(parseInt(currentBearId));",
+                      "            pm.expect(getPayload.bear_type).to.eql(postPayload.bear_type);",
+                      "            pm.expect(getPayload.bear_name).to.eql(postPayload.bear_name); ",
+                      "            pm.expect(getPayload.bear_age).to.eql(parseFloat(postPayload.bear_age));",
+                      "        });",
+                      "    });",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"bear_type\": \"{{bear_type}}\",\n    \"bear_name\": \"{{bear_name}}\",\n    \"bear_age\": {{bear_age}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [16-19, 25-26] – Создать медведя с валидным [bear_name]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var testName = pm.iterationData.get(\"testName\");",
+                      "",
+                      "// 1. Проверка статус кода",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "// 2. Проверка тела ответа (ID)",
+                      "let bearId;",
+                      "pm.test(\"Тело ответа представляет собой валидный bear_id (integer)\", function () {",
+                      "    const responseText = pm.response.text().trim();",
+                      "    pm.expect(responseText).to.match(/^\\d+$/, \"Ответ не является допустимым целочисленным ID\");",
+                      "    bearId = responseText;",
+                      "    pm.environment.set(\"bear_id\", bearId);",
+                      "});",
+                      "",
+                      "// 3. Дополнительная проверка: GET /bear/:id и сравнение с телом POST запроса",
+                      "pm.test(\"Проверка создания медведя с помощью GET.\", function () {",
+                      "    const postPayload = JSON.parse(pm.request.body.raw);",
+                      "    const currentBearId = pm.environment.get(\"bear_id\");",
+                      "    ",
+                      "    pm.sendRequest({",
+                      "        url: `${pm.variables.get(\"baseUrl\")}/bear/${currentBearId}`,",
+                      "        method: 'GET',",
+                      "        header: { 'Content-Type': 'application/json' }",
+                      "    }, function (err, res) {",
+                      "        pm.expect(err).to.be.null;",
+                      "        pm.expect(res).to.have.status(200);",
+                      "        ",
+                      "        const getPayload = res.json();",
+                      "        ",
+                      "        pm.test(\"Тело ответа на GET-запрос совпадает с телом POST-запроса.\", function () {",
+                      "            pm.expect(getPayload.bear_id).to.eql(parseInt(currentBearId));",
+                      "            pm.expect(getPayload.bear_type).to.eql(postPayload.bear_type);",
+                      "            pm.expect(getPayload.bear_name).to.eql(postPayload.bear_name); ",
+                      "            pm.expect(getPayload.bear_age).to.eql(parseFloat(postPayload.bear_age));",
+                      "        });",
+                      "    });",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "if (pm.iterationData.get(\"longName\") === true) {\r",
+                      "    pm.variables.set(\"bear_name\", \"A\".repeat(2501));\r",
+                      "} else {\r",
+                      "    pm.variables.set(\"bear_name\", pm.iterationData.get(\"bear_name\"));\r",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"bear_type\": \"{{bear_type}}\",\n    \"bear_name\": \"{{bear_name}}\",\n    \"bear_age\": {{bear_age}}\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [27, 30-32, 34] – Создать медведя с валидным [bear_age]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var testName = pm.iterationData.get(\"testName\");",
+                      "",
+                      "// 1. Проверка статус кода",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "// 2. Проверка тела ответа (ID)",
+                      "let bearId;",
+                      "pm.test(\"Тело ответа представляет собой валидный bear_id (integer)\", function () {",
+                      "    const responseText = pm.response.text().trim();",
+                      "    pm.expect(responseText).to.match(/^\\d+$/, \"Ответ не является допустимым целочисленным ID\");",
+                      "    bearId = responseText;",
+                      "    pm.environment.set(\"bear_id\", bearId);",
+                      "});",
+                      "",
+                      "// 3. Дополнительная проверка: GET /bear/:id и сравнение с телом POST запроса",
+                      "pm.test(\"Проверка создания медведя с помощью GET.\", function () {",
+                      "    const postPayload = JSON.parse(pm.request.body.raw);",
+                      "    const currentBearId = pm.environment.get(\"bear_id\");",
+                      "    ",
+                      "    pm.sendRequest({",
+                      "        url: `${pm.variables.get(\"baseUrl\")}/bear/${currentBearId}`,",
+                      "        method: 'GET',",
+                      "        header: { 'Content-Type': 'application/json' }",
+                      "    }, function (err, res) {",
+                      "        pm.expect(err).to.be.null;",
+                      "        pm.expect(res).to.have.status(200);",
+                      "        ",
+                      "        const getPayload = res.json();",
+                      "        ",
+                      "        pm.test(\"Тело ответа на GET-запрос совпадает с телом POST-запроса.\", function () {",
+                      "            pm.expect(getPayload.bear_id).to.eql(parseInt(currentBearId));",
+                      "            pm.expect(getPayload.bear_type).to.eql(postPayload.bear_type);",
+                      "            pm.expect(getPayload.bear_name).to.eql(postPayload.bear_name); ",
+                      "            pm.expect(getPayload.bear_age).to.eql(parseFloat(postPayload.bear_age));",
+                      "        });",
+                      "    });",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "",
+                    "value": "",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"bear_type\": \"{{bear_type}}\",\n    \"bear_name\": \"{{bear_name}}\",\n    \"bear_age\": {{bear_age}}\n}\n\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [44] –  Повторная отправка идентичных данных",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// ==========================================",
+                      "// ТЕСТ-КЕЙС №44: Проверка создания дублирующей записи",
+                      "// (Использует основной запрос как Первый POST)",
+                      "// ==========================================",
+                      "",
+                      "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";",
+                      "const payload = JSON.parse(pm.request.body.raw); // Берем тело из (Body -> raw -> JSON)",
+                      "",
+                      "// 1. ПРОВЕРКА ПЕРВОГО POST ЗАПРОСА (основной запрос из (Body -> raw -> JSON))",
+                      "pm.test(\"ПЕРВЫЙ POST: Статус соответствует ожидаемому - 200 OK\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "let bearId1 = pm.response.text().trim();",
+                      "pm.test(\"ПЕРВЫЙ POST: Тело ответа содержит bear_id '16'\", function () {",
+                      "    pm.expect(bearId1).to.eql(\"16\");",
+                      "});",
+                      "",
+                      "// 2. ПЕРВЫЙ GET ЗАПРОС (Проверка создания первого медведя)",
+                      "pm.sendRequest({",
+                      "    url: `${baseUrl}/bear/${bearId1}`,",
+                      "    method: 'GET'",
+                      "}, function (err, resGet1) {",
+                      "    ",
+                      "    pm.test(\"ПЕРВЫЙ GET: Статус соответствует ожидаемому - 200 OK\", function () {",
+                      "        pm.expect(err).to.be.null;",
+                      "        pm.expect(resGet1).to.have.status(200);",
+                      "    });",
+                      "",
+                      "    let get1Data = resGet1.json();",
+                      "    pm.environment.set(\"bear1_data\", JSON.stringify(get1Data));",
+                      "",
+                      "    pm.test(\"Тело ответа ПЕРВОГО GET-запроса совпадает с телом ПЕРВОГО POST-запроса.\", function () {",
+                      "        pm.expect(get1Data.bear_id).to.eql(parseInt(bearId1));",
+                      "        pm.expect(get1Data.bear_type).to.eql(payload.bear_type);",
+                      "        pm.expect(get1Data.bear_name).to.eql(payload.bear_name); ",
+                      "        pm.expect(get1Data.bear_age).to.eql(payload.bear_age);",
+                      "    });",
+                      "",
+                      "    // 3. ВТОРОЙ POST ЗАПРОС (Дублирование данных)",
+                      "    pm.sendRequest({",
+                      "        url: `${baseUrl}/bear`,",
+                      "        method: 'POST',",
+                      "        header: { 'Content-Type': 'application/json' },",
+                      "        body: { mode: 'raw', raw: JSON.stringify(payload) }",
+                      "    }, function (err, resPost2) {",
+                      "        ",
+                      "        pm.test(\"ВТОРОЙ POST: Статус соответствует ожидаемому - 200 OK\", function () {",
+                      "            pm.expect(err).to.be.null;",
+                      "            pm.expect(resPost2).to.have.status(200);",
+                      "        });",
+                      "",
+                      "        let bearId2 = resPost2.text().trim();",
+                      "        pm.test(\"ВТОРОЙ POST: Тело ответа содержит bear_id '17'\", function () {",
+                      "            pm.expect(bearId2).to.eql(\"17\");",
+                      "        });",
+                      "",
+                      "        // 4. ВТОРОЙ GET ЗАПРОС (Проверка создания дубликата)",
+                      "        pm.sendRequest({",
+                      "            url: `${baseUrl}/bear/${bearId2}`,",
+                      "            method: 'GET'",
+                      "        }, function (err, resGet2) {",
+                      "            ",
+                      "            pm.test(\"ВТОРОЙ GET: Статус соответствует ожидаемому - 200 OK\", function () {",
+                      "                pm.expect(err).to.be.null;",
+                      "                pm.expect(resGet2).to.have.status(200);",
+                      "            });",
+                      "",
+                      "            let get2Data = resGet2.json();",
+                      "            pm.environment.set(\"bear2_data\", JSON.stringify(get2Data));",
+                      "",
+                      "            pm.test(\"Тело ответа ВТОРОГО GET-запроса совпадает с телом ВТОРОГО POST-запроса.\", function () {",
+                      "                pm.expect(get2Data.bear_id).to.eql(parseInt(bearId2));",
+                      "                pm.expect(get2Data.bear_type).to.eql(payload.bear_type);",
+                      "                pm.expect(get2Data.bear_name).to.eql(payload.bear_name);",
+                      "                pm.expect(get2Data.bear_age).to.eql(payload.bear_age);",
+                      "            });",
+                      "",
+                      "            // 5. СРАВНЕНИЕ СОХРАНЕННЫХ ДАННЫХ (GET /bear/16 и GET /bear/17)",
+                      "            pm.test(\"Сравнение сохраненных GET/bear/16 vs GET/bear/17: тип, имя, возраст\", function () {",
+                      "                let bear1 = JSON.parse(pm.environment.get(\"bear1_data\"));",
+                      "                let bear2 = JSON.parse(pm.environment.get(\"bear2_data\"));",
+                      "                ",
+                      "                // Удаляем уникальный идентификатор перед сравнением",
+                      "                delete bear1.bear_id;",
+                      "                delete bear2.bear_id;",
+                      "                ",
+                      "                // Остальные поля должны быть полностью идентичны",
+                      "                pm.expect(bear2).to.eql(bear1);",
+                      "            });",
+                      "        });",
+                      "    });",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "",
+                    "value": "",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bear_type\":\"BLACK\",\n  \"bear_name\":\"MIK\",\n  \"bear_age\":77.5\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "POST /bear: 400 - Негативные сценарии",
+          "item": [
+            {
+              "name": "TC [5] – Пустое значение поля [bear_type]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 5)",
+                      "var testName =\"Пустое значение поля [bear_type]\";",
+                      "",
+                      "pm.test(\"Test: \" + testName +\" - Статус код 400 Bad Request\", function () {",
+                      "     pm.response.to.have.status(400); ",
+                      "     });",
+                      "",
+                      "// 2. Проверка тела ответа      ",
+                      "pm.test(\"Тело ответа содержит корректное сообщение об ошибке.\", function () {",
+                      "    const expectedHtml = \"<html><body><h2>400 Bad Request (There are no values in the field [bear_type])</h2></body></html>\";",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedHtml);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"bear_type\": \"\",\n    \"bear_name\": \"MIKHAIL\",\n    \"bear_age\": 17.5\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [6] – Отсутствует поле [bear_type]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 6)",
+                      "var testName = \"Отсутствует поле [bear_type]\";",
+                      "",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 400 Bad Request\", function () { ",
+                      "    pm.response.to.have.status(400); ",
+                      "    });",
+                      "",
+                      "// 2. Проверка тела ответа ",
+                      "pm.test(\"Тело ответа содержит корректное сообщение об ошибке.\", function () {",
+                      "    const expectedBody = \"Error. Please fill all parameters. Missing field: bear_type.\";",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedBody);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"bear_name\": \"MIKHAIL\",\n    \"bear_age\": 17.5\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [7-13] – Создать медведя с невалидным [bear_type]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода(Test Case 7-13)",
+                      "var testName = pm.iterationData.get(\"testName\");",
+                      "",
+                      "pm.test(\"Test: \" + testName +\" - Статус код 400 Bad Request\", function () {",
+                      "     pm.response.to.have.status(400);",
+                      "     });",
+                      "",
+                      "// 2. Проверка тела ответа      ",
+                      "pm.test(\"Тело ответа — отображается корректный код ошибки.\", function () {",
+                      "    const expectedHtml = \"<html><body><h2>400 Bad Request</h2></body></html>\";",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedHtml);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"bear_type\": \"{{bear_type}}\",\n    \"bear_name\": \"{{bear_name}}\",\n    \"bear_age\": {{bear_age}}\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [14] – Отсутствует поле [bear_name]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 14)",
+                      "var testName = \"Отсутствует поле [bear_name]\";",
+                      "",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 400 Bad Request\", function () { ",
+                      "    pm.response.to.have.status(400); ",
+                      "    });",
+                      "",
+                      "// 2. Проверка тела ответа ",
+                      "pm.test(\"Тело ответа содержит корректное сообщение об ошибке.\", function () {",
+                      "    const expectedBody = \"Error. Please fill all parameters. Missing field: bear_name.\";",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedBody);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"bear_type\":\"BLACK\",  \n    \"bear_age\":17.5\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [15] – Пустое значение поля [bear_name]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 15)",
+                      "var testName =\"Пустое значение поля [bear_type]\";",
+                      "",
+                      "pm.test(\"Test: \" + testName +\" - Статус код 400 Bad Request\", function () {",
+                      "     pm.response.to.have.status(400); ",
+                      "     });",
+                      "",
+                      "// 2. Проверка тела ответа      ",
+                      "pm.test(\"Тело ответа содержит корректное сообщение об ошибке.\", function () {",
+                      "    const expectedHtml = \"<html><body><h2>400 Bad Request (There are no values in the field [bear_name])</h2></body></html>\";",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedHtml);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bear_type\":\"BLACK\",\n  \"bear_name\":\"\",\n  \"bear_age\":17.5\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [20-24] – Создать медведя с невалидным [bear_name]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода(Test Case 20-24)",
+                      "var testName = pm.iterationData.get(\"testName\");",
+                      "",
+                      "pm.test(\"Test: \" + testName +\" - Статус код 400 Bad Request\", function () {",
+                      "     pm.response.to.have.status(400);",
+                      "     });",
+                      "",
+                      "// 2. Проверка тела ответа      ",
+                      "pm.test(\"Тело ответа — отображается корректный код ошибки.\", function () {",
+                      "    const expectedHtml = \"<html><body><h2>400 Bad Request</h2></body></html>\";",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedHtml);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"bear_type\": \"{{bear_type}}\",\n    \"bear_name\": \"{{bear_name}}\",\n    \"bear_age\": {{bear_age}}\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [28] – Отсутствует поле [bear_age]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 28)",
+                      "var testName = \"Отсутствует поле [bear_age]\";",
+                      "",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 400 Bad Request\", function () { ",
+                      "    pm.response.to.have.status(400); ",
+                      "    });",
+                      "",
+                      "// 2. Проверка тела ответа ",
+                      "pm.test(\"Тело ответа содержит корректное сообщение об ошибке.\", function () {",
+                      "    const expectedBody = \"Error. Please fill all parameters. Missing field: bear_age.\";",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedBody);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bear_type\":\"BLACK\",\n  \"bear_name\":\"MIKHAIL\"  \n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [29] – Пустое значение поля [bear_age]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 29)",
+                      "var testName =\"Пустое значение поля [bear_type]\";",
+                      "",
+                      "pm.test(\"Test: \" + testName +\" - Статус код 400 Bad Request\", function () {",
+                      "     pm.response.to.have.status(400); ",
+                      "     });",
+                      "",
+                      "// 2. Проверка тела ответа      ",
+                      "pm.test(\"Тело ответа содержит корректное сообщение об ошибке.\", function () {",
+                      "    const expectedHtml = \"<html><body><h2>400 Bad Request (There are no values in the field [bear_age])</h2></body></html>\";",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedHtml);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bear_type\":\"BLACK\",\n  \"bear_name\":\"MIKHAIL\",\n  \"bear_age\": null\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [33, 35-43] – Создать медведя с невалидным [bear_age]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода(Test Case 33,35-43)",
+                      "var testName = pm.iterationData.get(\"testName\");",
+                      "",
+                      "pm.test(\"Test: \" + testName +\" - Статус код 400 Bad Request\", function () {",
+                      "     pm.response.to.have.status(400);",
+                      "      });",
+                      "",
+                      "// 2. Проверка тела ответа",
+                      "pm.test(\"Тело ответа — отображается корректный код ошибки.\", function () {",
+                      "    const expectedHtml = \"<html><body><h2>400 Bad Request</h2></body></html>\";",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedHtml);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"bear_type\": \"{{bear_type}}\",\n    \"bear_name\": \"{{bear_name}}\",\n    \"bear_age\": {{bear_age}}\n}\n// Если ошибка в файле [post_400_TC[33, 35-43]_age.json]\n    // {\n\t// \t// \"testName\": \"[bear_age При наличии ведущего нуля]\",\n\t// \t\"bear_type\":\"BLACK\",\n\t// \t\"bear_name\":\"MIKHAIL\",\n\t// \t\"bear_age\":017.5\n\t// }\n\t// {\n\t// \t// \"testName\": \"[bear_age Пробел вместо целой части]\",\n\t// \t\"bear_type\":\"BLACK\",\n\t// \t\"bear_name\":\"MIKHAIL\",\n\t// \t\"bear_age\":  .5\n\t// }\n\n\t// {\n\t// \t// \"testName\": \"[bear_age Пробел вместо дробной части]\",\n\t// \t\"bear_type\":\"BLACK\",\n\t// \t\"bear_name\":\"MIKHAIL\",\n\t// \t\"bear_age\": 17.\n\t// }\n\n\t// {\n\t// \t// \"testName\": \"[bear_age Пробел внутри значения]\",\n\t// \t\"bear_type\":\"BLACK\",\n\t// \t\"bear_name\":\"MIKHAIL\",\n\t// \t\"bear_age\": 1 7.5\n\t// }\n\n\t// {\n\t// \t// \"testName\": \"[bear_age Запятая вместо десятичной точки]\",\n\t// \t\"bear_type\":\"BLACK\",\n\t// \t\"bear_name\":\"MIKHAIL\",\n\t// \t\"bear_age\": 17,5\n\t// }"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [45] – Отсутствуют значений во всех полях",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 45)",
+                      "var testName =\"Отсутствие значений во всех обязательных полях [bear_type, bear_name, bear_age]\";",
+                      "",
+                      "pm.test(\"Test: \" + testName +\" - Статус код 400 Bad Request\", function () { ",
+                      "    pm.response.to.have.status(400); ",
+                      "    });",
+                      "    ",
+                      "// 2. Проверка тела ответа    ",
+                      "pm.test(\"Тело ответа — отображается корректный код ошибки.\", function () {",
+                      "    const expectedBody = \"Error. Please fill all parameters. Missing field: [bear_type, bear_name, bear_age].\";",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedBody);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"bear_type\":\"\",\r\n  \"bear_name\":\"\",\r\n  \"bear_age\":\r\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [46] – Отсутствуют все поля (пустой JSON)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 46)",
+                      "var testName =\"Создать медведя с отсутствующем полеми [bear_type, bear_name, bear_age]\";",
+                      "",
+                      "pm.test(\"Test: \" + testName +\" - Статус код 400 Bad Request\", function () { ",
+                      "    pm.response.to.have.status(400); ",
+                      "    });",
+                      "    ",
+                      "// 2. Проверка тела ответа    ",
+                      "pm.test(\"Тело ответа — отображается корректный код ошибки.\", function () {",
+                      "    const expectedBody = \"Error. Please fill all parameters. Missing field: [bear_type, bear_name, bear_age].\";",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedBody);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Удаление данных после POST!!!",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// ==========================================\r",
+                  "// ОЧИСТКА ДАННЫХ: Удаление медведей с ID 1 по 30\r",
+                  "// ==========================================\r",
+                  "\r",
+                  "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                  "\r",
+                  "// 1. Проверка статус кода\r",
+                  "var testName = \"DELETE /bear: удаление всех медведей созданных в ходе всех POST запросов\";\r",
+                  "\r",
+                  "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// 2. Проверка тела ответа\r",
+                  "pm.test(\"DELETE: Тело ответа имеет следующий вид - OK\", function () {\r",
+                  "    pm.expect(pm.response.text().trim()).to.eql(\"OK\");\r",
+                  "});\r",
+                  "\r",
+                  "// 3. Дополнительная проверка: GET /bear/ (общая)\r",
+                  "pm.sendRequest({\r",
+                  "    url: `${baseUrl}/bear`,\r",
+                  "    method: 'GET',\r",
+                  "    header: { 'Content-Type': 'application/json' }\r",
+                  "}, function (errGet, resGet) {\r",
+                  "    \r",
+                  "    pm.test(\"GET /bear: Статус код 200 OK\", function () {\r",
+                  "        pm.expect(errGet).to.be.null;\r",
+                  "        pm.expect(resGet).to.have.status(200);\r",
+                  "    });\r",
+                  "\r",
+                  "    // Проверка, что ответ — пустой массив\r",
+                  "    pm.test(\"GET /bear: Тело ответа содержит пустой JSON-массив []\", function () {\r",
+                  "        const getResponseText = resGet.text().trim();\r",
+                  "        pm.expect(getResponseText).to.eql(\"[]\");\r",
+                  "    });\r",
+                  "\r",
+                  "    // Дополнительно: проверяем, что длина массива равна 0\r",
+                  "    pm.test(\"GET /bear: Количество записей в БД равно 0\", function () {\r",
+                  "        const allBears = resGet.json();\r",
+                  "        pm.expect(Array.isArray(allBears)).to.be.true;\r",
+                  "        pm.expect(allBears.length).to.eql(0);\r",
+                  "    });\r",
+                  "});\r",
+                  "// // 1. ПРОВЕРКА ОСНОВНОГО ЗАПРОСА (DELETE /bear/4)\r",
+                  "// pm.test(\"Удаление медведя ID 4: Статус 200 OK\", function () {\r",
+                  "//     pm.response.to.have.status(200);\r",
+                  "// });\r",
+                  "\r",
+                  "// pm.test(\"Удаление медведя ID 4: Тело ответа имеет следующий вид - OK\", function () {\r",
+                  "//     pm.expect(pm.response.text().trim()).to.eql(\"OK\");\r",
+                  "// });\r",
+                  "\r",
+                  "// // 2. ПОДГОТОВКА СПИСКА ID ДЛЯ УДАЛЕНИЯ (с 5 по 17)\r",
+                  "// const idsToDelete = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];\r",
+                  "\r",
+                  "// // 3. РЕКУРСИЯ\r",
+                  "// function deleteSequentially(ids, index) {\r",
+                  "//     if (index >= ids.length) {\r",
+                  "//         console.log(\"Все запросы на удаление выполнены.\");\r",
+                  "//         return;\r",
+                  "//     }\r",
+                  "\r",
+                  "//     const currentId = ids[index];\r",
+                  "\r",
+                  "//     pm.sendRequest({\r",
+                  "//         url: `${baseUrl}/bear/${currentId}`,\r",
+                  "//         method: 'DELETE'\r",
+                  "//     }, function (err, res) {\r",
+                  "        \r",
+                  "//         // Проверка статус кода для текущего ID\r",
+                  "//         pm.test(`Удаление медведя ID ${currentId}: Статус 200 OK`, function () {\r",
+                  "//             pm.expect(err).to.be.null;\r",
+                  "//             pm.expect(res).to.have.status(200);\r",
+                  "//         });\r",
+                  "\r",
+                  "//         // Проверка тела ответа для текущего ID\r",
+                  "//         pm.test(`Удаление медведя ID ${currentId}: Тело ответа имеет следующий вид - OK`, function () {\r",
+                  "//             pm.expect(res.text().trim()).to.eql(\"OK\");\r",
+                  "//         });\r",
+                  "\r",
+                  "//         // Рекурсивный вызов для следующего ID\r",
+                  "//         deleteSequentially(ids, index + 1);\r",
+                  "//     });\r",
+                  "// }\r",
+                  "\r",
+                  "// // 4. ЗАПУСК ПРОЦЕССА УДАЛЕНИЯ\r",
+                  "// deleteSequentially(idsToDelete, 0);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bear"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "### POST `/bear` — Создать медведя\n\n- **Метод:** `POST`\n    \n- **URL:** `{{baseUrl}}/bear`\n    \n- **Headers:** `Content-Type: application/json`\n    \n- **Body (raw → JSON):**\n    \n\n``` bash\njson\n{\n  \"bear_type\": \"BLACK\",\n  \"bear_name\": \"MIKHAIL\",\n  \"bear_age\": 17.5\n}\n\n ```\n\n- **Успешный ответ:** `200 OK`, тело: (например, `1`).\n    \n- **Ошибки:** `400 Bad Request` (невалидные данные), `500 Internal Server Error` (некорректная валидация — известные баги).\n    \n\n**Покрытые сценарии:**\n\n- ✅ Валидные `bear_type`: BLACK, POLAR, BROWN, GUMMY (TC 1-4)\n    \n- ✅ Валидные `bear_name`: с апострофом, дефисом, пробелом, кириллицей, длиной 2500+ символов (TC 16-19, 25-26)\n    \n- ✅ Валидные `bear_age`: граничные значения 0, 0.01, 99.99, 100 (TC 27, 30-32, 34)\n    \n- ✅ Дублирование данных (TC 44)\n    \n- ❌ Пустое/отсутствующее `bear_type` (TC 5, 6)\n    \n- ❌ Невалидный `bear_type`: `black`, спецсимволы, числа, кириллица, пробелы (TC 7-13)\n    \n- ❌ Отсутствующее/пустое `bear_name` (TC 14, 15)\n    \n- ❌ Невалидный `bear_name`: кириллица, числа, спецсимволы, emoji (TC 20-24)\n    \n- ❌ Отсутствующее/пустое `bear_age` (TC 28, 29)\n    \n- ❌ Невалидный `bear_age`: отрицательные, вне диапазона, с запятой, строковые (TC 33, 35-43)\n    \n- ❌ Пустой JSON / отсутствие всех полей (TC 45, 46)\n    \n\n**Post-condition:** В коллекции есть отдельный запрос `Удаление данных после POST!!!`, который удаляет все записи, созданные в ходе POST-тестов. Это позволяет запускать тесты в изолированном окружении."
+    },
+    {
+      "name": "GET /bear",
+      "item": [
+        {
+          "name": "TC [1] - В базе данных нет записей",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Проверка статус кода (Test Case 1)\r",
+                  "var testName = \"GET /bear: запрос в пустую БД\";\r",
+                  "\r",
+                  "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "// 2. Проверка тела ответа\r",
+                  "pm.test(\"Тело ответа — содержит пустой JSON массив\", function () {    \r",
+                  "    const expectedBody = \"[]\";    \r",
+                  "    pm.expect(pm.response.text().trim()).to.eql(expectedBody);    \r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC [2] - Получить все имеющиеся записи",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Проверка статус кода (Test Case 2)\r",
+                  "var testName = \"GET /bear: при наличии созданных медведей\";\r",
+                  "\r",
+                  "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// 2. Парсим ответ сервера\r",
+                  "const responseData = pm.response.json();\r",
+                  "\r",
+                  "// 3. Проверка структуры и количества элементов\r",
+                  "pm.test(\"Тело ответа — массив JSON\", function () {\r",
+                  "    pm.expect(Array.isArray(responseData), \"Тело ответа должено представлять собой массив.\").to.be.true;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Количество элементов в массиве равно 3\", function () {\r",
+                  "    pm.expect(responseData.length).to.eql(3);\r",
+                  "});\r",
+                  "\r",
+                  "// 4. Проверка тела ответа\r",
+                  "const expectedData = [\r",
+                  "    {\r",
+                  "        \"bear_id\": 31,\r",
+                  "        \"bear_type\": \"BLACK\",\r",
+                  "        \"bear_name\": \"MIKHAIL\",\r",
+                  "        \"bear_age\": 17.5\r",
+                  "    },\r",
+                  "    {\r",
+                  "        \"bear_id\": 32,\r",
+                  "        \"bear_type\": \"POLAR\",\r",
+                  "        \"bear_name\": \"MIKHAIL\",\r",
+                  "        \"bear_age\": 17.5\r",
+                  "    },\r",
+                  "    {\r",
+                  "        \"bear_id\": 33,\r",
+                  "        \"bear_type\": \"BROWN\",\r",
+                  "        \"bear_name\": \"MIKHAIL\",\r",
+                  "        \"bear_age\": 17.5\r",
+                  "    }\r",
+                  "];\r",
+                  "\r",
+                  "pm.test(\"Тело ответа полностью совпадает с ожидаемым массивом объектов\", function () {\r",
+                  "    pm.expect(responseData).to.eql(expectedData);\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// ==========================================\r",
+                  "// PRE-REQUEST SCRIPT: Подготовка данных для GET /bear\r",
+                  "// Создание 3 эталонных медведей через POST\r",
+                  "// ==========================================\r",
+                  "\r",
+                  "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                  "\r",
+                  "const bearsToCreate = [\r",
+                  "    { \"bear_type\": \"BLACK\", \"bear_name\": \"MIKHAIL\", \"bear_age\": 17.5 },\r",
+                  "    { \"bear_type\": \"POLAR\", \"bear_name\": \"MIKHAIL\", \"bear_age\": 17.5 },\r",
+                  "    { \"bear_type\": \"BROWN\", \"bear_name\": \"MIKHAIL\", \"bear_age\": 17.5 }\r",
+                  "];\r",
+                  "\r",
+                  "// Последовательное создание медведей (рекурсивно, чтобы сохранить порядок ID)\r",
+                  "createBearsSequentially(0);\r",
+                  "\r",
+                  "// Рекурсивная функция для последовательного создания медведей\r",
+                  "function createBearsSequentially(index) {\r",
+                  "    if (index >= bearsToCreate.length) {\r",
+                  "        console.log(\"Pre-request: Все 3 медведя успешно созданы.\");\r",
+                  "        return;\r",
+                  "    }\r",
+                  "    \r",
+                  "    const bear = bearsToCreate[index];\r",
+                  "    \r",
+                  "    pm.sendRequest({\r",
+                  "        url: `${baseUrl}/bear`,\r",
+                  "        method: 'POST',\r",
+                  "        header: { 'Content-Type': 'application/json' },\r",
+                  "        body: { mode: 'raw', raw: JSON.stringify(bear) }\r",
+                  "    }, function (errPost, resPost) {\r",
+                  "        \r",
+                  "        if (errPost) {\r",
+                  "            console.error(`Pre-request: Ошибка создания медведя #${index + 1}:`, errPost);\r",
+                  "            return;\r",
+                  "        }\r",
+                  "        \r",
+                  "        console.log(`Pre-request: Создан медведь #${index + 1} (${bear.bear_type}), bear_id = ${resPost.text().trim()}`);\r",
+                  "        \r",
+                  "        // Рекурсивный вызов для следующего медведя\r",
+                  "        createBearsSequentially(index + 1);\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bear"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "### GET `/bear` — Получить всех медведей\n\n- **Метод:** `GET`\n    \n- **URL:** `{{baseUrl}}/bear`\n    \n- **Успешный ответ:** `200 OK`, тело — массив JSON-объектов.\n    \n- **Особенности:**\n    \n    - Тест `TC [1]` проверяет пустую БД → ожидается `[]`.\n        \n    - Тест `TC [2]` использует **Pre-request Script**, который создаёт 3 эталонных медведя (BLACK, POLAR, BROWN) и ожидает ID `31, 32, 33`."
+    },
+    {
+      "name": "GET /bear/:id",
+      "item": [
+        {
+          "name": "TC [3] - Получение существующего медведя [id = 31]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Проверка статус кода (Test Case 3)\r",
+                  "var testName = \"GET /bear/:id: получение медведя по [id = 31]\";\r",
+                  "\r",
+                  "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// 2. Парсим ответ сервера\r",
+                  "const responseData = pm.response.json();\r",
+                  "\r",
+                  "// 3. Проверка структуры и количества элементов\r",
+                  "pm.test(\"Тело ответа — массив JSON\", function () {\r",
+                  "    pm.expect(Array.isArray(responseData), \"Тело ответа должен быть 1 объект\").to.be.false;\r",
+                  "    pm.expect(responseData).to.be.an('object');\r",
+                  "});\r",
+                  "\r",
+                  "// 4. ОПРЕДЕЛЕНИЕ ОЖИДАЕМЫХ ДАННЫХ В ЗАВИСИМОСТИ ОТ ID\r",
+                  "const currentBearId = parseInt(pm.environment.get(\"bear_id\") || \"31\");\r",
+                  "let expectedData = {};\r",
+                  "\r",
+                  "if (currentBearId === 31) {\r",
+                  "    expectedData = {\r",
+                  "        \"bear_id\": 31,\r",
+                  "        \"bear_type\": \"BLACK\",\r",
+                  "        \"bear_name\": \"MIKHAIL\",\r",
+                  "        \"bear_age\": 17.5\r",
+                  "    };\r",
+                  "} else if (currentBearId === 32) {\r",
+                  "    expectedData = {\r",
+                  "        \"bear_id\": 32,\r",
+                  "        \"bear_type\": \"POLAR\",\r",
+                  "        \"bear_name\": \"MIKHAIL\",\r",
+                  "        \"bear_age\": 17.5\r",
+                  "    };\r",
+                  "} else if (currentBearId === 33) {\r",
+                  "    expectedData = {\r",
+                  "        \"bear_id\": 33,\r",
+                  "        \"bear_type\": \"BROWN\",\r",
+                  "        \"bear_name\": \"MIKHAIL\",\r",
+                  "        \"bear_age\": 17.5\r",
+                  "    };\r",
+                  "} else {\r",
+                  "    // Если тестируется ID, для которого нет данных в скрипте\r",
+                  "    pm.expect.fail(`Тестовые данные для bear_id ${currentBearId} не определены в скрипте.`);\r",
+                  "}\r",
+                  "\r",
+                  "// 5. Проверка тела ответа\r",
+                  "pm.test(`Тело ответа полностью совпадает с ожидаемым объектом для bear_id ${currentBearId}`, function () {\r",
+                  "    pm.expect(responseData).to.eql(expectedData);\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bear/31",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bear",
+                "31"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC [4] - Получении несуществующего медведя",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Проверка статус кода (Test Case 1)\r",
+                  "var testName = \"GET /bear/:id: получении несуществующего медведя\";\r",
+                  "\r",
+                  "pm.test(\"Test: \" + testName + \" - Статус код 404 Not Found\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "// 2. Проверка тела ответа\r",
+                  "pm.test(\"Тело ответа — отображается корректный код ошибки.\", function () {    \r",
+                  "    const expectedBody = \"<html><body><h2>404 Not Found</h2></body></html>\";    \r",
+                  "    pm.expect(pm.response.text().trim()).to.eql(expectedBody);    \r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bear/555",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bear",
+                "555"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "### GET `/bear/:id` — Получить медведя по ID\n\n- **Метод:** `GET`\n    \n- **URL:** `{{baseUrl}}/bear/{{bear_id}}`\n    \n- **Успешный ответ:** `200 OK`, тело — JSON-объект.\n    \n- **Ошибки:** `404 Not Found` — если медведь не существует.\n    \n- **Особенности:** В тесте `TC [3]` используются условные операторы для проверки данных в зависимости от ID (`31`, `32` или `33`)."
+    },
+    {
+      "name": "PUT /bear/:id",
+      "item": [
+        {
+          "name": "PUT /bear/:id  200 - Успешные сценарии",
+          "item": [
+            {
+              "name": "TC [1] - Изменение всех полей",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 1)\r",
+                      "var testName = \"PUT /bear/:id: обновить значения всех полей\";\r",
+                      "\r",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "// 2. Проверка тела ответа\r",
+                      "pm.test(\"PUT: Тело ответа имеет следующий вид - OK\", function () {\r",
+                      "    pm.expect(pm.response.text().trim()).to.eql(\"OK\");\r",
+                      "});\r",
+                      "\r",
+                      "// 3. Проверка изменений методом GET\r",
+                      "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                      "const bearId = pm.environment.get(\"bear_id\") || \"31\"; \r",
+                      "\r",
+                      "pm.sendRequest({\r",
+                      "    url: `${baseUrl}/bear/${bearId}`,\r",
+                      "    method: 'GET',\r",
+                      "    header: { 'Content-Type': 'application/json' }\r",
+                      "}, function (err, resGet) {\r",
+                      "    \r",
+                      "    // Проверка статус кода GET\r",
+                      "    pm.test(\"GET: Статус код 200 OK\", function () {\r",
+                      "        pm.expect(err).to.be.null;\r",
+                      "        pm.expect(resGet).to.have.status(200);\r",
+                      "    });\r",
+                      "\r",
+                      "    // Парсим ответ GET\r",
+                      "    const getData = resGet.json();\r",
+                      "    \r",
+                      "    // Ожидаемые данные после обновления (для проверки самого теста)\r",
+                      "    const expectedData = {\r",
+                      "        \"bear_id\": parseInt(bearId),\r",
+                      "        \"bear_type\": \"POLAR\",\r",
+                      "        \"bear_name\": \"POL\",\r",
+                      "        \"bear_age\": 60.0\r",
+                      "    };\r",
+                      "\r",
+                      "    // 4. Проверка тела ответа GET\r",
+                      "    pm.test(\"GET: Тело ответа полностью совпадает с обновленными данными\", function () {\r",
+                      "        pm.expect(getData).to.eql(expectedData);\r",
+                      "    });\r",
+                      "\r",
+                      "    // Детальная проверка каждого поля (для наглядности в отчете)\r",
+                      "    pm.test(\"GET: Поле 'bear_type' обновлено на 'POLAR'\", function () {\r",
+                      "        pm.expect(getData.bear_type).to.eql(\"POLAR\");\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"GET: Поле 'bear_name' обновлено на 'POL'\", function () {\r",
+                      "        pm.expect(getData.bear_name).to.eql(\"POL\");\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"GET: Поле 'bear_age' обновлено на '60.0'\", function () {\r",
+                      "        pm.expect(getData.bear_age).to.eql(60.0);\r",
+                      "    });\r",
+                      "\r",
+                      "    // ==========================================\r",
+                      "    // ПОСТУСЛОВИЕ: ОТКАТ БД В ИСХОДНОЕ СОСТОЯНИЕ\r",
+                      "    // ==========================================\r",
+                      "    \r",
+                      "    // Исходные данные для восстановления\r",
+                      "    const originalData = {\r",
+                      "        \"bear_type\": \"BLACK\",\r",
+                      "        \"bear_name\": \"MIKHAIL\",\r",
+                      "        \"bear_age\": 17.5\r",
+                      "    };\r",
+                      "\r",
+                      "    pm.test(\"Post-condition: Восстановление исходных данных медведя ID \" + bearId, function () {\r",
+                      "        \r",
+                      "        // Отправляем PUT запрос с исходными данными для отката\r",
+                      "        pm.sendRequest({\r",
+                      "            url: `${baseUrl}/bear/${bearId}`,\r",
+                      "            method: 'PUT',\r",
+                      "            header: { 'Content-Type': 'application/json' },\r",
+                      "            body: {\r",
+                      "                mode: 'raw',\r",
+                      "                raw: JSON.stringify(originalData)\r",
+                      "            }\r",
+                      "        }, function (errRestore, resRestore) {\r",
+                      "            \r",
+                      "            // 1. Проверка статуса PUT запроса восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - статус 200 OK\", function () {\r",
+                      "                pm.expect(errRestore).to.be.null;\r",
+                      "                pm.expect(resRestore).to.have.status(200);\r",
+                      "            });\r",
+                      "\r",
+                      "            // 2. Проверка тела ответа PUT запроса восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - тело ответа 'OK'\", function () {\r",
+                      "                pm.expect(resRestore.text().trim()).to.eql(\"OK\");\r",
+                      "            });\r",
+                      "\r",
+                      "            // 3. Финальная проверка через GET, что данные вернулись в исходное состояние\r",
+                      "            pm.sendRequest({\r",
+                      "                url: `${baseUrl}/bear/${bearId}`,\r",
+                      "                method: 'GET',\r",
+                      "                header: { 'Content-Type': 'application/json' }\r",
+                      "            }, function (errFinal, resFinal) {\r",
+                      "                \r",
+                      "                pm.test(\"Post-condition: GET после восстановления - статус 200 OK\", function () {\r",
+                      "                    pm.expect(errFinal).to.be.null;\r",
+                      "                    pm.expect(resFinal).to.have.status(200);\r",
+                      "                });\r",
+                      "\r",
+                      "                const finalData = resFinal.json();\r",
+                      "                const expectedFinalData = {\r",
+                      "                    \"bear_id\": parseInt(bearId),\r",
+                      "                    \"bear_type\": \"BLACK\",\r",
+                      "                    \"bear_name\": \"MIKHAIL\",\r",
+                      "                    \"bear_age\": 17.5\r",
+                      "                };\r",
+                      "\r",
+                      "                pm.test(\"Post-condition: Данные успешно восстановлены до исходного состояния\", function () {\r",
+                      "                    pm.expect(finalData).to.eql(expectedFinalData);\r",
+                      "                });\r",
+                      "            });\r",
+                      "        });\r",
+                      "    });\r",
+                      "});\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"bear_type\":\"POLAR\",\r\n  \"bear_name\":\"POL\",\r\n  \"bear_age\":60.0\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear/{{bear_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear",
+                    "{{bear_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [2] - Изменить значение поля [bear_type = BROWN]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 2)\r",
+                      "var testName = \"PUT /bear/:id: обновить значение поля [bear_type = BROWN]\";\r",
+                      "\r",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "// 2. Проверка тела ответа\r",
+                      "pm.test(\"PUT:  Тело ответа имеет следующий вид - OK\", function () {\r",
+                      "    pm.expect(pm.response.text().trim()).to.eql(\"OK\");\r",
+                      "});\r",
+                      "\r",
+                      "// 3. Проверка изменений методом GET\r",
+                      "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                      "const bearId = pm.environment.get(\"bear_id\") || \"31\"; \r",
+                      "\r",
+                      "pm.sendRequest({\r",
+                      "    url: `${baseUrl}/bear/${bearId}`,\r",
+                      "    method: 'GET',\r",
+                      "    header: { 'Content-Type': 'application/json' }\r",
+                      "}, function (err, resGet) {\r",
+                      "    \r",
+                      "    // Проверка статус кода GET\r",
+                      "    pm.test(\"GET: Статус код 200 OK\", function () {\r",
+                      "        pm.expect(err).to.be.null;\r",
+                      "        pm.expect(resGet).to.have.status(200);\r",
+                      "    });\r",
+                      "\r",
+                      "    // Парсим ответ GET\r",
+                      "    const getData = resGet.json();\r",
+                      "    \r",
+                      "    // Ожидаемые данные после обновления\r",
+                      "    const expectedData = {\r",
+                      "        \"bear_id\": parseInt(bearId),\r",
+                      "        \"bear_type\":\"BROWN\",\r",
+                      "        \"bear_name\":\"MIKHAIL\",\r",
+                      "        \"bear_age\":17.5\r",
+                      "    };\r",
+                      "\r",
+                      "    // 4. Проверка тела ответа GET\r",
+                      "    pm.test(\"GET: Тело ответа полностью совпадает с обновленными данными\", function () {\r",
+                      "        pm.expect(getData).to.eql(expectedData);\r",
+                      "    });\r",
+                      "\r",
+                      "    // Детальная проверка каждого поля (для наглядности в отчете)\r",
+                      "    pm.test(\"GET: Поле 'bear_type' обновлено на 'BROWN'\", function () {\r",
+                      "        pm.expect(getData.bear_type).to.eql(expectedData.bear_type);\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"GET: Поле 'bear_name' не изменилось 'MIKHAI'\", function () {\r",
+                      "        pm.expect(getData.bear_name).to.eql(expectedData.bear_name);\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"GET: Поле 'bear_age'  не изменилось '17.5'\", function () {\r",
+                      "        pm.expect(getData.bear_age).to.eql(expectedData.bear_age);\r",
+                      "    });\r",
+                      "\r",
+                      "    // ==========================================\r",
+                      "    // ПОСТУСЛОВИЕ: ОТКАТ БД В ИСХОДНОЕ СОСТОЯНИЕ\r",
+                      "    // ==========================================\r",
+                      "    \r",
+                      "    // Исходные данные для восстановления\r",
+                      "    const originalData = {\r",
+                      "        \"bear_type\": \"BLACK\",\r",
+                      "        \"bear_name\": \"MIKHAIL\",\r",
+                      "        \"bear_age\": 17.5\r",
+                      "    };\r",
+                      "\r",
+                      "    pm.test(\"Post-condition: Восстановление исходных данных медведя ID \" + bearId, function () {\r",
+                      "        \r",
+                      "        // Отправляем PUT запрос с исходными данными для отката\r",
+                      "        pm.sendRequest({\r",
+                      "            url: `${baseUrl}/bear/${bearId}`,\r",
+                      "            method: 'PUT',\r",
+                      "            header: { 'Content-Type': 'application/json' },\r",
+                      "            body: {\r",
+                      "                mode: 'raw',\r",
+                      "                raw: JSON.stringify(originalData)\r",
+                      "            }\r",
+                      "        }, function (errRestore, resRestore) {\r",
+                      "            \r",
+                      "            // 1. Проверка статуса PUT запроса восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - статус 200 OK\", function () {\r",
+                      "                pm.expect(errRestore).to.be.null;\r",
+                      "                pm.expect(resRestore).to.have.status(200);\r",
+                      "            });\r",
+                      "\r",
+                      "            // 2. Проверка тела ответа PUT запроса восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - тело ответа 'OK'\", function () {\r",
+                      "                pm.expect(resRestore.text().trim()).to.eql(\"OK\");\r",
+                      "            });\r",
+                      "\r",
+                      "            // 3. Финальная проверка через GET, что данные вернулись в исходное состояние\r",
+                      "            pm.sendRequest({\r",
+                      "                url: `${baseUrl}/bear/${bearId}`,\r",
+                      "                method: 'GET',\r",
+                      "                header: { 'Content-Type': 'application/json' }\r",
+                      "            }, function (errFinal, resFinal) {\r",
+                      "                \r",
+                      "                pm.test(\"Post-condition: GET после восстановления - статус 200 OK\", function () {\r",
+                      "                    pm.expect(errFinal).to.be.null;\r",
+                      "                    pm.expect(resFinal).to.have.status(200);\r",
+                      "                });\r",
+                      "\r",
+                      "                const finalData = resFinal.json();\r",
+                      "                const expectedFinalData = {\r",
+                      "                    \"bear_id\": parseInt(bearId),\r",
+                      "                    \"bear_type\": \"BLACK\",\r",
+                      "                    \"bear_name\": \"MIKHAIL\",\r",
+                      "                    \"bear_age\": 17.5\r",
+                      "                };\r",
+                      "\r",
+                      "                pm.test(\"Post-condition: Данные успешно восстановлены до исходного состояния\", function () {\r",
+                      "                    pm.expect(finalData).to.eql(expectedFinalData);\r",
+                      "                });\r",
+                      "            });\r",
+                      "        });\r",
+                      "    });\r",
+                      "});\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"bear_type\":\"BROWN\",\r\n  \"bear_name\":\"MIKHAIL\",\r\n  \"bear_age\":17.5\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear/{{bear_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear",
+                    "{{bear_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [4] - Изменить значение поля [bear_name = MIK]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 4)\r",
+                      "var testName = \"PUT /bear/:id: обновить значение поля [bear_name = MIK]\";\r",
+                      "\r",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "// 2. Проверка тела ответа\r",
+                      "pm.test(\"PUT:  Тело ответа имеет следующий вид - OK\", function () {\r",
+                      "    pm.expect(pm.response.text().trim()).to.eql(\"OK\");\r",
+                      "});\r",
+                      "\r",
+                      "// 3. Проверка изменений методом GET\r",
+                      "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                      "const bearId = pm.environment.get(\"bear_id\") || \"31\"; \r",
+                      "\r",
+                      "pm.sendRequest({\r",
+                      "    url: `${baseUrl}/bear/${bearId}`,\r",
+                      "    method: 'GET',\r",
+                      "    header: { 'Content-Type': 'application/json' }\r",
+                      "}, function (err, resGet) {\r",
+                      "    \r",
+                      "    // Проверка статус кода GET\r",
+                      "    pm.test(\"GET: Статус код 200 OK\", function () {\r",
+                      "        pm.expect(err).to.be.null;\r",
+                      "        pm.expect(resGet).to.have.status(200);\r",
+                      "    });\r",
+                      "\r",
+                      "    // Парсим ответ GET\r",
+                      "    const getData = resGet.json();\r",
+                      "    \r",
+                      "    // Ожидаемые данные после обновления\r",
+                      "    const expectedData = {\r",
+                      "        \"bear_id\": parseInt(bearId),\r",
+                      "        \"bear_type\":\"BLACK\",\r",
+                      "        \"bear_name\":\"MIK\",\r",
+                      "        \"bear_age\":17.5\r",
+                      "    };\r",
+                      "\r",
+                      "    // 4. Проверка тела ответа GET\r",
+                      "    pm.test(\"GET: Тело ответа полностью совпадает с обновленными данными\", function () {\r",
+                      "        pm.expect(getData).to.eql(expectedData);\r",
+                      "    });\r",
+                      "\r",
+                      "    // Детальная проверка каждого поля (для наглядности в отчете)\r",
+                      "    pm.test(\"GET: Поле 'bear_type'  не изменилось  'BLACK'\", function () {\r",
+                      "        pm.expect(getData.bear_type).to.eql(expectedData.bear_type);\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"GET: Поле 'bear_name' обновлено на 'MIK'\", function () {\r",
+                      "        pm.expect(getData.bear_name).to.eql(expectedData.bear_name);\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"GET: Поле 'bear_age'  не изменилось '17.5'\", function () {\r",
+                      "        pm.expect(getData.bear_age).to.eql(expectedData.bear_age);\r",
+                      "    });\r",
+                      "    \r",
+                      "    // ==========================================\r",
+                      "    // ПОСТУСЛОВИЕ: ОТКАТ БД В ИСХОДНОЕ СОСТОЯНИЕ\r",
+                      "    // ==========================================\r",
+                      "    \r",
+                      "    // Исходные данные для восстановления\r",
+                      "    const originalData = {\r",
+                      "        \"bear_type\": \"BLACK\",\r",
+                      "        \"bear_name\": \"MIKHAIL\",\r",
+                      "        \"bear_age\": 17.5\r",
+                      "    };\r",
+                      "\r",
+                      "    pm.test(\"Post-condition: Восстановление исходных данных медведя ID \" + bearId, function () {\r",
+                      "        \r",
+                      "        // Отправляем PUT запрос с исходными данными для отката\r",
+                      "        pm.sendRequest({\r",
+                      "            url: `${baseUrl}/bear/${bearId}`,\r",
+                      "            method: 'PUT',\r",
+                      "            header: { 'Content-Type': 'application/json' },\r",
+                      "            body: {\r",
+                      "                mode: 'raw',\r",
+                      "                raw: JSON.stringify(originalData)\r",
+                      "            }\r",
+                      "        }, function (errRestore, resRestore) {\r",
+                      "            \r",
+                      "            // 1. Проверка статуса PUT запроса восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - статус 200 OK\", function () {\r",
+                      "                pm.expect(errRestore).to.be.null;\r",
+                      "                pm.expect(resRestore).to.have.status(200);\r",
+                      "            });\r",
+                      "\r",
+                      "            // 2. Проверка тела ответа PUT запроса восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - тело ответа 'OK'\", function () {\r",
+                      "                pm.expect(resRestore.text().trim()).to.eql(\"OK\");\r",
+                      "            });\r",
+                      "\r",
+                      "            // 3. Финальная проверка через GET, что данные вернулись в исходное состояние\r",
+                      "            pm.sendRequest({\r",
+                      "                url: `${baseUrl}/bear/${bearId}`,\r",
+                      "                method: 'GET',\r",
+                      "                header: { 'Content-Type': 'application/json' }\r",
+                      "            }, function (errFinal, resFinal) {\r",
+                      "                \r",
+                      "                pm.test(\"Post-condition: GET после восстановления - статус 200 OK\", function () {\r",
+                      "                    pm.expect(errFinal).to.be.null;\r",
+                      "                    pm.expect(resFinal).to.have.status(200);\r",
+                      "                });\r",
+                      "\r",
+                      "                const finalData = resFinal.json();\r",
+                      "                const expectedFinalData = {\r",
+                      "                    \"bear_id\": parseInt(bearId),\r",
+                      "                    \"bear_type\": \"BLACK\",\r",
+                      "                    \"bear_name\": \"MIKHAIL\",\r",
+                      "                    \"bear_age\": 17.5\r",
+                      "                };\r",
+                      "\r",
+                      "                pm.test(\"Post-condition: Данные успешно восстановлены до исходного состояния\", function () {\r",
+                      "                    pm.expect(finalData).to.eql(expectedFinalData);\r",
+                      "                });\r",
+                      "            });\r",
+                      "        });\r",
+                      "    });\r",
+                      "\r",
+                      "});\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"bear_type\":\"BLACK\",\r\n  \"bear_name\":\"MIK\",\r\n  \"bear_age\":17.5\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear/{{bear_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear",
+                    "{{bear_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [6] - Изменить значение поля [bear_age]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 6)\r",
+                      "var testName = \"PUT /bear/:id: обновить значение поля [bear_age = 99.99]\";\r",
+                      "\r",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "// 2. Проверка тела ответа\r",
+                      "pm.test(\"PUT:  Тело ответа имеет следующий вид - OK\", function () {\r",
+                      "    pm.expect(pm.response.text().trim()).to.eql(\"OK\");\r",
+                      "});\r",
+                      "\r",
+                      "// 3. Проверка изменений методом GET\r",
+                      "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                      "const bearId = pm.environment.get(\"bear_id\") || \"31\";\r",
+                      "\r",
+                      "pm.sendRequest({\r",
+                      "    url: `${baseUrl}/bear/${bearId}`,\r",
+                      "    method: 'GET',\r",
+                      "    header: { 'Content-Type': 'application/json' }\r",
+                      "}, function (err, resGet) {\r",
+                      "\r",
+                      "    // Проверка статус кода GET\r",
+                      "    pm.test(\"GET: Статус код 200 OK\", function () {\r",
+                      "        pm.expect(err).to.be.null;\r",
+                      "        pm.expect(resGet).to.have.status(200);\r",
+                      "    });\r",
+                      "\r",
+                      "    // Парсим ответ GET\r",
+                      "    const getData = resGet.json();\r",
+                      "\r",
+                      "    // Ожидаемые данные после обновления\r",
+                      "    const expectedData = {\r",
+                      "        \"bear_id\": parseInt(bearId),\r",
+                      "        \"bear_type\": \"BLACK\",\r",
+                      "        \"bear_name\": \"MIKHAIL\",\r",
+                      "        \"bear_age\": 99.99\r",
+                      "    };\r",
+                      "\r",
+                      "    // 4. Проверка тела ответа GET\r",
+                      "    pm.test(\"GET: Тело ответа полностью совпадает с обновленными данными\", function () {\r",
+                      "        pm.expect(getData).to.eql(expectedData);\r",
+                      "    });\r",
+                      "\r",
+                      "    // Детальная проверка каждого поля (для наглядности в отчете)\r",
+                      "    pm.test(\"GET: Поле 'bear_type'  не изменилось  'BLACK'\", function () {\r",
+                      "        pm.expect(getData.bear_type).to.eql(expectedData.bear_type);\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"GET: Поле 'bear_name' не изменилось 'MIKHAIL'\", function () {\r",
+                      "        pm.expect(getData.bear_name).to.eql(expectedData.bear_name);\r",
+                      "    });\r",
+                      "\r",
+                      "    pm.test(\"GET: Поле 'bear_age' обновлено на '99.99'\", function () {\r",
+                      "        pm.expect(getData.bear_age).to.eql(expectedData.bear_age);\r",
+                      "    });\r",
+                      "        \r",
+                      "    // ==========================================\r",
+                      "    // ПОСТУСЛОВИЕ: ОТКАТ БД В ИСХОДНОЕ СОСТОЯНИЕ\r",
+                      "    // ==========================================\r",
+                      "    \r",
+                      "    // Исходные данные для восстановления\r",
+                      "    const originalData = {\r",
+                      "        \"bear_type\": \"BLACK\",\r",
+                      "        \"bear_name\": \"MIKHAIL\",\r",
+                      "        \"bear_age\": 17.5\r",
+                      "    };\r",
+                      "\r",
+                      "    pm.test(\"Post-condition: Восстановление исходных данных медведя ID \" + bearId, function () {\r",
+                      "        \r",
+                      "        // Отправляем PUT запрос с исходными данными для отката\r",
+                      "        pm.sendRequest({\r",
+                      "            url: `${baseUrl}/bear/${bearId}`,\r",
+                      "            method: 'PUT',\r",
+                      "            header: { 'Content-Type': 'application/json' },\r",
+                      "            body: {\r",
+                      "                mode: 'raw',\r",
+                      "                raw: JSON.stringify(originalData)\r",
+                      "            }\r",
+                      "        }, function (errRestore, resRestore) {\r",
+                      "            \r",
+                      "            // 1. Проверка статуса PUT запроса восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - статус 200 OK\", function () {\r",
+                      "                pm.expect(errRestore).to.be.null;\r",
+                      "                pm.expect(resRestore).to.have.status(200);\r",
+                      "            });\r",
+                      "\r",
+                      "            // 2. Проверка тела ответа PUT запроса восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - тело ответа 'OK'\", function () {\r",
+                      "                pm.expect(resRestore.text().trim()).to.eql(\"OK\");\r",
+                      "            });\r",
+                      "\r",
+                      "            // 3. Финальная проверка через GET, что данные вернулись в исходное состояние\r",
+                      "            pm.sendRequest({\r",
+                      "                url: `${baseUrl}/bear/${bearId}`,\r",
+                      "                method: 'GET',\r",
+                      "                header: { 'Content-Type': 'application/json' }\r",
+                      "            }, function (errFinal, resFinal) {\r",
+                      "                \r",
+                      "                pm.test(\"Post-condition: GET после восстановления - статус 200 OK\", function () {\r",
+                      "                    pm.expect(errFinal).to.be.null;\r",
+                      "                    pm.expect(resFinal).to.have.status(200);\r",
+                      "                });\r",
+                      "\r",
+                      "                const finalData = resFinal.json();\r",
+                      "                const expectedFinalData = {\r",
+                      "                    \"bear_id\": parseInt(bearId),\r",
+                      "                    \"bear_type\": \"BLACK\",\r",
+                      "                    \"bear_name\": \"MIKHAIL\",\r",
+                      "                    \"bear_age\": 17.5\r",
+                      "                };\r",
+                      "\r",
+                      "                pm.test(\"Post-condition: Данные успешно восстановлены до исходного состояния\", function () {\r",
+                      "                    pm.expect(finalData).to.eql(expectedFinalData);\r",
+                      "                });\r",
+                      "            });\r",
+                      "        });\r",
+                      "    });\r",
+                      "});\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"bear_type\":\"BLACK\",\r\n  \"bear_name\":\"MIKHAIL\",\r\n  \"bear_age\":99.99\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear/{{bear_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear",
+                    "{{bear_id}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "PUT /bear/:id 400 - Негативные сценарии",
+          "item": [
+            {
+              "name": "TC [3] - Изменить значение поля [bear_type = PANDA]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 3)\r",
+                      "var testName = \"PUT /bear/:id: обновить значение поля [bear_type = PANDA]\";\r",
+                      "\r",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 400 Bad Request\", function () {\r",
+                      "    pm.response.to.have.status(400);\r",
+                      "});\r",
+                      "\r",
+                      "// 2. Проверка тела ответа\r",
+                      "pm.test(\"Тело ответа — отображается корректный код ошибки.\", function () {\r",
+                      "    const expectedHtml = \"<html><body><h2>400 Bad Request</h2></body></html>\";\r",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedHtml);\r",
+                      "});\r",
+                      "\r",
+                      "// 3. Проверка изменений методом GET\r",
+                      "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                      "const bearId = pm.environment.get(\"bear_id\") || \"31\";\r",
+                      "\r",
+                      "// Исходные данные (эталон) для проверки и отката\r",
+                      "const originalData = {\r",
+                      "    \"bear_id\": parseInt(bearId),\r",
+                      "    \"bear_type\": \"BLACK\",\r",
+                      "    \"bear_name\": \"MIKHAIL\",\r",
+                      "    \"bear_age\": 17.5\r",
+                      "};\r",
+                      "\r",
+                      "// Данные для тела PUT-запроса восстановления (без bear_id)\r",
+                      "const restorePayload = {\r",
+                      "    \"bear_type\": originalData.bear_type,\r",
+                      "    \"bear_name\": originalData.bear_name,\r",
+                      "    \"bear_age\": originalData.bear_age\r",
+                      "};\r",
+                      "\r",
+                      "pm.sendRequest({\r",
+                      "    url: `${baseUrl}/bear/${bearId}`,\r",
+                      "    method: 'GET',\r",
+                      "    header: { 'Content-Type': 'application/json' }\r",
+                      "}, function (err, resGet) {\r",
+                      "    \r",
+                      "    // Проверка статус кода GET\r",
+                      "    pm.test(\"GET: Статус код 200 OK\", function () {\r",
+                      "        pm.expect(err).to.be.null;\r",
+                      "        pm.expect(resGet).to.have.status(200);\r",
+                      "    });\r",
+                      "\r",
+                      "    // Если GET успешен, анализируем изменения\r",
+                      "    let differences = [];\r",
+                      "    if (!err && resGet) {\r",
+                      "        const getData = resGet.json();\r",
+                      "        \r",
+                      "        pm.test(\"GET: Проверка неизменности данных в БД для bear_id=\" + bearId, function () {\r",
+                      "            // Сравниваем поля и собираем различия\r",
+                      "            if (getData.bear_type !== originalData.bear_type) {\r",
+                      "                differences.push(`В поле \"bear_type\" проведены изменения на \"${getData.bear_type}\"`);\r",
+                      "            }\r",
+                      "            if (getData.bear_name !== originalData.bear_name) {\r",
+                      "                differences.push(`В поле \"bear_name\" проведены изменения на \"${getData.bear_name}\"`);\r",
+                      "            }\r",
+                      "            if (getData.bear_age !== originalData.bear_age) {\r",
+                      "                differences.push(`В поле \"bear_age\" проведены изменения на \"${getData.bear_age}\"`);\r",
+                      "            }\r",
+                      "\r",
+                      "            if (differences.length > 0) {\r",
+                      "                console.log(\"ВНИМАНИЕ: \" + differences.join(\". \"));\r",
+                      "                pm.expect.fail(\"Данные были изменены! \" + differences.join(\". \"));\r",
+                      "            } else {\r",
+                      "                pm.expect(true).to.be.true;\r",
+                      "            }\r",
+                      "        });\r",
+                      "    } else {\r",
+                      "        pm.test(\"GET: Не удалось получить данные для анализа изменений\", function () {\r",
+                      "            pm.expect.fail(\"GET-запрос завершился ошибкой: \" + (err ? err.message : \"unknown\"));\r",
+                      "        });\r",
+                      "    }\r",
+                      "\r",
+                      "    // ==========================================\r",
+                      "    // ПОСТУСЛОВИЕ: ОТКАТ БД В ИСХОДНОЕ СОСТОЯНИЕ\r",
+                      "    // ==========================================\r",
+                      "   \r",
+                      "    pm.test(\"Post-condition: Восстановление исходных данных медведя ID \" + bearId, function () {\r",
+                      "        \r",
+                      "        pm.sendRequest({\r",
+                      "            url: `${baseUrl}/bear/${bearId}`,\r",
+                      "            method: 'PUT',\r",
+                      "            header: { 'Content-Type': 'application/json' },\r",
+                      "            body: {\r",
+                      "                mode: 'raw',\r",
+                      "                raw: JSON.stringify(restorePayload)\r",
+                      "            }\r",
+                      "        }, function (errRestore, resRestore) {\r",
+                      "            \r",
+                      "            // 1. Проверка статуса PUT восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - статус 200 OK\", function () {\r",
+                      "                pm.expect(errRestore).to.be.null;\r",
+                      "                pm.expect(resRestore).to.have.status(200);\r",
+                      "            });\r",
+                      "\r",
+                      "            // 2. Проверка тела ответа PUT восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - тело ответа 'OK'\", function () {\r",
+                      "                pm.expect(resRestore.text().trim()).to.eql(\"OK\");\r",
+                      "            });\r",
+                      "\r",
+                      "            // 3. Финальная проверка через GET, что данные вернулись в исходное состояние\r",
+                      "            pm.sendRequest({\r",
+                      "                url: `${baseUrl}/bear/${bearId}`,\r",
+                      "                method: 'GET',\r",
+                      "                header: { 'Content-Type': 'application/json' }\r",
+                      "            }, function (errFinal, resFinal) {\r",
+                      "                \r",
+                      "                pm.test(\"Post-condition: GET после восстановления - статус 200 OK\", function () {\r",
+                      "                    pm.expect(errFinal).to.be.null;\r",
+                      "                    pm.expect(resFinal).to.have.status(200);\r",
+                      "                });\r",
+                      "\r",
+                      "                const finalData = resFinal.json();\r",
+                      "\r",
+                      "                pm.test(\"Post-condition: Данные успешно восстановлены до исходного состояния\", function () {\r",
+                      "                    pm.expect(finalData).to.eql(originalData);\r",
+                      "                });\r",
+                      "            });\r",
+                      "        });\r",
+                      "    });\r",
+                      "});\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"bear_type\":\"PANDA\",\r\n  \"bear_name\":\"MIKHAIL\",\r\n  \"bear_age\":17.5\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear/{{bear_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear",
+                    "{{bear_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [5] - Изменить значение поля [bear_name = число]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 5)\r",
+                      "var testName = \"PUT /bear/:id: обновить значение поля [bear_name = число]\";\r",
+                      "\r",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 400 Bad Request\", function () {\r",
+                      "    pm.response.to.have.status(400);\r",
+                      "});\r",
+                      "\r",
+                      "// 2. Проверка тела ответа\r",
+                      "pm.test(\"Тело ответа — отображается корректный код ошибки.\", function () {\r",
+                      "    const expectedHtml = \"<html><body><h2>400 Bad Request</h2></body></html>\";\r",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedHtml);\r",
+                      "});\r",
+                      "\r",
+                      "\r",
+                      "// 3. Проверка изменений методом GET\r",
+                      "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                      "const bearId = pm.environment.get(\"bear_id\") || \"31\";\r",
+                      "\r",
+                      "// Исходные данные (эталон) для проверки и отката\r",
+                      "const originalData = {\r",
+                      "    \"bear_id\": parseInt(bearId),\r",
+                      "    \"bear_type\": \"BLACK\",\r",
+                      "    \"bear_name\": \"MIKHAIL\",\r",
+                      "    \"bear_age\": 17.5\r",
+                      "};\r",
+                      "\r",
+                      "// Данные для тела PUT-запроса восстановления (без bear_id)\r",
+                      "const restorePayload = {\r",
+                      "    \"bear_type\": originalData.bear_type,\r",
+                      "    \"bear_name\": originalData.bear_name,\r",
+                      "    \"bear_age\": originalData.bear_age\r",
+                      "};\r",
+                      "\r",
+                      "pm.sendRequest({\r",
+                      "    url: `${baseUrl}/bear/${bearId}`,\r",
+                      "    method: 'GET',\r",
+                      "    header: { 'Content-Type': 'application/json' }\r",
+                      "}, function (err, resGet) {\r",
+                      "    \r",
+                      "    // Проверка статус кода GET\r",
+                      "    pm.test(\"GET: Статус код 200 OK\", function () {\r",
+                      "        pm.expect(err).to.be.null;\r",
+                      "        pm.expect(resGet).to.have.status(200);\r",
+                      "    });\r",
+                      "\r",
+                      "    // Если GET успешен, анализируем изменения\r",
+                      "    let differences = [];\r",
+                      "    if (!err && resGet) {\r",
+                      "        const getData = resGet.json();\r",
+                      "        \r",
+                      "        pm.test(\"GET: Проверка неизменности данных в БД для bear_id=\" + bearId, function () {\r",
+                      "            // Сравниваем поля и собираем различия\r",
+                      "            if (getData.bear_type !== originalData.bear_type) {\r",
+                      "                differences.push(`В поле \"bear_type\" проведены изменения на \"${getData.bear_type}\"`);\r",
+                      "            }\r",
+                      "            if (getData.bear_name !== originalData.bear_name) {\r",
+                      "                differences.push(`В поле \"bear_name\" проведены изменения на \"${getData.bear_name}\"`);\r",
+                      "            }\r",
+                      "            if (getData.bear_age !== originalData.bear_age) {\r",
+                      "                differences.push(`В поле \"bear_age\" проведены изменения на \"${getData.bear_age}\"`);\r",
+                      "            }\r",
+                      "\r",
+                      "            if (differences.length > 0) {\r",
+                      "                console.log(\"ВНИМАНИЕ: \" + differences.join(\". \"));\r",
+                      "                pm.expect.fail(\"Данные были изменены! \" + differences.join(\". \"));\r",
+                      "            } else {\r",
+                      "                pm.expect(true).to.be.true;\r",
+                      "            }\r",
+                      "        });\r",
+                      "    } else {\r",
+                      "        pm.test(\"GET: Не удалось получить данные для анализа изменений\", function () {\r",
+                      "            pm.expect.fail(\"GET-запрос завершился ошибкой: \" + (err ? err.message : \"unknown\"));\r",
+                      "        });\r",
+                      "    }\r",
+                      "\r",
+                      "    // ==========================================\r",
+                      "    // ПОСТУСЛОВИЕ: ОТКАТ БД В ИСХОДНОЕ СОСТОЯНИЕ\r",
+                      "    // ==========================================\r",
+                      "   \r",
+                      "    pm.test(\"Post-condition: Восстановление исходных данных медведя ID \" + bearId, function () {\r",
+                      "        \r",
+                      "        pm.sendRequest({\r",
+                      "            url: `${baseUrl}/bear/${bearId}`,\r",
+                      "            method: 'PUT',\r",
+                      "            header: { 'Content-Type': 'application/json' },\r",
+                      "            body: {\r",
+                      "                mode: 'raw',\r",
+                      "                raw: JSON.stringify(restorePayload)\r",
+                      "            }\r",
+                      "        }, function (errRestore, resRestore) {\r",
+                      "            \r",
+                      "            // 1. Проверка статуса PUT восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - статус 200 OK\", function () {\r",
+                      "                pm.expect(errRestore).to.be.null;\r",
+                      "                pm.expect(resRestore).to.have.status(200);\r",
+                      "            });\r",
+                      "\r",
+                      "            // 2. Проверка тела ответа PUT восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - тело ответа 'OK'\", function () {\r",
+                      "                pm.expect(resRestore.text().trim()).to.eql(\"OK\");\r",
+                      "            });\r",
+                      "\r",
+                      "            // 3. Финальная проверка через GET, что данные вернулись в исходное состояние\r",
+                      "            pm.sendRequest({\r",
+                      "                url: `${baseUrl}/bear/${bearId}`,\r",
+                      "                method: 'GET',\r",
+                      "                header: { 'Content-Type': 'application/json' }\r",
+                      "            }, function (errFinal, resFinal) {\r",
+                      "                \r",
+                      "                pm.test(\"Post-condition: GET после восстановления - статус 200 OK\", function () {\r",
+                      "                    pm.expect(errFinal).to.be.null;\r",
+                      "                    pm.expect(resFinal).to.have.status(200);\r",
+                      "                });\r",
+                      "\r",
+                      "                const finalData = resFinal.json();\r",
+                      "\r",
+                      "                pm.test(\"Post-condition: Данные успешно восстановлены до исходного состояния\", function () {\r",
+                      "                    pm.expect(finalData).to.eql(originalData);\r",
+                      "                });\r",
+                      "            });\r",
+                      "        });\r",
+                      "    });\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"bear_type\":\"BLACK\",\r\n  \"bear_name\":123456,\r\n  \"bear_age\":17.5\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear/{{bear_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear",
+                    "{{bear_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [7] - Изменить значение поля [bear_age = текст]",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 7)\r",
+                      "var testName = \"PUT /bear/:id: обновить значение поля [bear_age = текст]\";\r",
+                      "\r",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 400 Bad Request\", function () {\r",
+                      "    pm.response.to.have.status(400);\r",
+                      "});\r",
+                      "\r",
+                      "// 2. Проверка тела ответа\r",
+                      "pm.test(\"Тело ответа — отображается корректный код ошибки.\", function () {\r",
+                      "    const expectedHtml = \"<html><body><h2>400 Bad Request</h2></body></html>\";\r",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedHtml);\r",
+                      "});\r",
+                      "\r",
+                      "// 3. Проверка изменений методом GET\r",
+                      "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                      "const bearId = pm.environment.get(\"bear_id\") || \"31\";\r",
+                      "\r",
+                      "// Исходные данные (эталон) для проверки и отката\r",
+                      "const originalData = {\r",
+                      "    \"bear_id\": parseInt(bearId),\r",
+                      "    \"bear_type\": \"BLACK\",\r",
+                      "    \"bear_name\": \"MIKHAIL\",\r",
+                      "    \"bear_age\": 17.5\r",
+                      "};\r",
+                      "\r",
+                      "// Данные для тела PUT-запроса восстановления (без bear_id)\r",
+                      "const restorePayload = {\r",
+                      "    \"bear_type\": originalData.bear_type,\r",
+                      "    \"bear_name\": originalData.bear_name,\r",
+                      "    \"bear_age\": originalData.bear_age\r",
+                      "};\r",
+                      "\r",
+                      "pm.sendRequest({\r",
+                      "    url: `${baseUrl}/bear/${bearId}`,\r",
+                      "    method: 'GET',\r",
+                      "    header: { 'Content-Type': 'application/json' }\r",
+                      "}, function (err, resGet) {\r",
+                      "    \r",
+                      "    // Проверка статус кода GET\r",
+                      "    pm.test(\"GET: Статус код 200 OK\", function () {\r",
+                      "        pm.expect(err).to.be.null;\r",
+                      "        pm.expect(resGet).to.have.status(200);\r",
+                      "    });\r",
+                      "\r",
+                      "    // Если GET успешен, анализируем изменения\r",
+                      "    let differences = [];\r",
+                      "    if (!err && resGet) {\r",
+                      "        const getData = resGet.json();\r",
+                      "        \r",
+                      "        pm.test(\"GET: Проверка неизменности данных в БД для bear_id=\" + bearId, function () {\r",
+                      "            // Сравниваем поля и собираем различия\r",
+                      "            if (getData.bear_type !== originalData.bear_type) {\r",
+                      "                differences.push(`В поле \"bear_type\" проведены изменения на \"${getData.bear_type}\"`);\r",
+                      "            }\r",
+                      "            if (getData.bear_name !== originalData.bear_name) {\r",
+                      "                differences.push(`В поле \"bear_name\" проведены изменения на \"${getData.bear_name}\"`);\r",
+                      "            }\r",
+                      "            if (getData.bear_age !== originalData.bear_age) {\r",
+                      "                differences.push(`В поле \"bear_age\" проведены изменения на \"${getData.bear_age}\"`);\r",
+                      "            }\r",
+                      "\r",
+                      "            if (differences.length > 0) {\r",
+                      "                console.log(\"ВНИМАНИЕ: \" + differences.join(\". \"));\r",
+                      "                pm.expect.fail(\"Данные были изменены! \" + differences.join(\". \"));\r",
+                      "            } else {\r",
+                      "                pm.expect(true).to.be.true;\r",
+                      "            }\r",
+                      "        });\r",
+                      "    } else {\r",
+                      "        pm.test(\"GET: Не удалось получить данные для анализа изменений\", function () {\r",
+                      "            pm.expect.fail(\"GET-запрос завершился ошибкой: \" + (err ? err.message : \"unknown\"));\r",
+                      "        });\r",
+                      "    }\r",
+                      "\r",
+                      "    // ==========================================\r",
+                      "    // ПОСТУСЛОВИЕ: ОТКАТ БД В ИСХОДНОЕ СОСТОЯНИЕ\r",
+                      "    // ==========================================\r",
+                      "   \r",
+                      "    pm.test(\"Post-condition: Восстановление исходных данных медведя ID \" + bearId, function () {\r",
+                      "        \r",
+                      "        pm.sendRequest({\r",
+                      "            url: `${baseUrl}/bear/${bearId}`,\r",
+                      "            method: 'PUT',\r",
+                      "            header: { 'Content-Type': 'application/json' },\r",
+                      "            body: {\r",
+                      "                mode: 'raw',\r",
+                      "                raw: JSON.stringify(restorePayload)\r",
+                      "            }\r",
+                      "        }, function (errRestore, resRestore) {\r",
+                      "            \r",
+                      "            // 1. Проверка статуса PUT восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - статус 200 OK\", function () {\r",
+                      "                pm.expect(errRestore).to.be.null;\r",
+                      "                pm.expect(resRestore).to.have.status(200);\r",
+                      "            });\r",
+                      "\r",
+                      "            // 2. Проверка тела ответа PUT восстановления\r",
+                      "            pm.test(\"Post-condition: PUT восстановление - тело ответа 'OK'\", function () {\r",
+                      "                pm.expect(resRestore.text().trim()).to.eql(\"OK\");\r",
+                      "            });\r",
+                      "\r",
+                      "            // 3. Финальная проверка через GET, что данные вернулись в исходное состояние\r",
+                      "            pm.sendRequest({\r",
+                      "                url: `${baseUrl}/bear/${bearId}`,\r",
+                      "                method: 'GET',\r",
+                      "                header: { 'Content-Type': 'application/json' }\r",
+                      "            }, function (errFinal, resFinal) {\r",
+                      "                \r",
+                      "                pm.test(\"Post-condition: GET после восстановления - статус 200 OK\", function () {\r",
+                      "                    pm.expect(errFinal).to.be.null;\r",
+                      "                    pm.expect(resFinal).to.have.status(200);\r",
+                      "                });\r",
+                      "\r",
+                      "                const finalData = resFinal.json();\r",
+                      "\r",
+                      "                pm.test(\"Post-condition: Данные успешно восстановлены до исходного состояния\", function () {\r",
+                      "                    pm.expect(finalData).to.eql(originalData);\r",
+                      "                });\r",
+                      "            });\r",
+                      "        });\r",
+                      "    });\r",
+                      "});\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n   \"bear_type\":\"BLACK\",\r\n   \"bear_name\":\"MIKHAIL\",\r\n  \"bear_age\":\"текст\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear/{{bear_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear",
+                    "{{bear_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TC [8] - Обновить несуществующего медведя",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// 1. Проверка статус кода (Test Case 8)\r",
+                      "var testName = \"PUT /bear/:id: обновить значение поля [bear_age = текст]\";\r",
+                      "\r",
+                      "pm.test(\"Test: \" + testName + \" - Статус код 404 Not Found\", function () {\r",
+                      "    pm.response.to.have.status(404);\r",
+                      "});\r",
+                      "\r",
+                      "// 2. Проверка тела ответа\r",
+                      "pm.test(\"Тело ответа — отображается корректный код ошибки.\", function () {\r",
+                      "    const expectedHtml = \"<html><body><h2>404 Not Found</h2></body></html>\";\r",
+                      "    pm.expect(pm.response.text().trim()).to.eql(expectedHtml);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"bear_type\":\"BLACK\",\r\n  \"bear_name\":\"NAME\",\r\n  \"bear_age\":25.5\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bear/555",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "bear",
+                    "555"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ],
+      "description": "### PUT `/bear/:id` — Обновить медведя\n\n- **Метод:** `PUT`\n    \n- **URL:** `{{baseUrl}}/bear/{{bear_id}}`\n    \n- **Headers:** `Content-Type: application/json`\n    \n- **Body (raw → JSON):**\n    \n\n``` bash\njson\n{\n  \"bear_type\": \"POLAR\",\n  \"bear_name\": \"POL\",\n  \"bear_age\": 60.0\n}\n\n ```\n\n- **Успешный ответ:** `200 OK`, тело: `OK`.\n    \n- **Ошибки:** `400 Bad Request` — невалидные данные; `404 Not Found` — медведь не найден.\n    \n\n**Покрытые сценарии:**\n\n- ✅ Обновление всех полей (TC 1)\n    \n- ✅ Обновление `bear_type` (TC 2), `bear_name` (TC 4), `bear_age` (TC 6)\n    \n- ❌ Невалидный `bear_type = PANDA` (TC 3)\n    \n- ❌ Невалидный `bear_name = 123456` (TC 5)\n    \n- ❌ Невалидный `bear_age = \"текст\"` (TC 7)\n    \n- ❌ Обновление несуществующего медведя (TC 8)\n    \n\n**Post-condition:** После каждого теста данные откатываются к исходному состоянию (`BLACK / MIKHAIL / 17.5`) через дополнительный `PUT`\\-запрос."
+    },
+    {
+      "name": "DELETE /bear/:id",
+      "item": [
+        {
+          "name": "TC [2] - Удаление медведя [id = 31]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                  "const deletedBearId = 31;\r",
+                  "\r",
+                  "// 1. Проверка статус кода (Test Case 2)\r",
+                  "var testName = \"DELETE /bear/:id: удаление медведя по [id = 31]\";\r",
+                  "\r",
+                  "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// 2. Проверка тела ответа\r",
+                  "pm.test(\"DELETE: Тело ответа имеет следующий вид - OK\", function () {\r",
+                  "    pm.expect(pm.response.text().trim()).to.eql(\"OK\");\r",
+                  "});\r",
+                  "\r",
+                  "// 3. Дополнительная проверка: GET /bear/ (общая)\r",
+                  "pm.sendRequest({\r",
+                  "    url: `${baseUrl}/bear`,\r",
+                  "    method: 'GET',\r",
+                  "    header: { 'Content-Type': 'application/json' }\r",
+                  "}, function (errGetAll, resGetAll) {\r",
+                  "        \r",
+                  "    pm.test(\"GET /bear: Статус код 200 OK\", function () {\r",
+                  "        pm.expect(errGetAll).to.be.null;\r",
+                  "        pm.expect(resGetAll).to.have.status(200);\r",
+                  "    });\r",
+                  "\r",
+                  "    const allBears = resGetAll.json();\r",
+                  "\r",
+                  "    // Проверка, что ответ — массив\r",
+                  "    pm.test(\"GET /bear: Ответ является массивом\", function () {\r",
+                  "        pm.expect(Array.isArray(allBears)).to.be.true;\r",
+                  "    });\r",
+                  "\r",
+                  "    // Проверка, что удалённого медведя (bear_id=31) больше нет в массиве\r",
+                  "    pm.test(`GET /bear: Медведь с bear_id=${deletedBearId} отсутствует в списке`, function () {\r",
+                  "        const foundBear = allBears.find(bear => bear.bear_id === deletedBearId);\r",
+                  "        pm.expect(foundBear, `Найден неудалённый медведь с bear_id=${deletedBearId}`).to.be.undefined;\r",
+                  "    });\r",
+                  "\r",
+                  "    // Проверка, что в массиве остались только медведи с id=32 и id=33\r",
+                  "    pm.test(\"GET /bear: Массив содержит только оставшихся медведей (bear_id=32 и bear_id=33)\", function () {\r",
+                  "        const expectedBears = [\r",
+                  "            {\r",
+                  "            \"bear_id\": 32,\r",
+                  "                \"bear_type\": \"POLAR\",\r",
+                  "                \"bear_name\": \"MIKHAIL\",\r",
+                  "                \"bear_age\": 17.5\r",
+                  "            },\r",
+                  "            {\r",
+                  "                \"bear_id\": 33,\r",
+                  "                \"bear_type\": \"BROWN\",\r",
+                  "                \"bear_name\": \"MIKHAIL\",\r",
+                  "                \"bear_age\": 17.5\r",
+                  "            }\r",
+                  "        ];\r",
+                  "            \r",
+                  "        // Сортируем оба массива по bear_id для стабильного сравнения\r",
+                  "        const sortedActual = [...allBears].sort((a, b) => a.bear_id - b.bear_id);\r",
+                  "        const sortedExpected = [...expectedBears].sort((a, b) => a.bear_id - b.bear_id);\r",
+                  "        \r",
+                  "        pm.expect(sortedActual).to.eql(sortedExpected);\r",
+                  "    });\r",
+                  "\r",
+                  "    // Дополнительная проверка количества элементов\r",
+                  "    pm.test(\"GET /bear: Количество оставшихся записей равно 2\", function () {\r",
+                  "        pm.expect(allBears.length).to.eql(2);\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bear/{{bear_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bear",
+                "{{bear_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC [3] - Повторное удаление медведя [id = 31]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                  "const deletedBearId = 31;\r",
+                  "\r",
+                  "// 1. Проверка статус кода (Test Case 3)\r",
+                  "var testName = \"DELETE /bear/:id: повторное удаление медведя по [id = 31]\";\r",
+                  "\r",
+                  "pm.test(\"Test: \" + testName + \" - Статус код 404 Not Found\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "// 2. Проверка тела ответа      \r",
+                  "pm.test(\"Тело ответа содержит корректное сообщение об ошибке.\", function () {\r",
+                  "    const expectedHtml = \"<html><body><h2>404 Not Found</h2></body></html>\";\r",
+                  "    pm.expect(pm.response.text().trim()).to.eql(expectedHtml);\r",
+                  "});\r",
+                  "\r",
+                  "// 3. Дополнительная проверка: GET /bear/ (общая)\r",
+                  "pm.sendRequest({\r",
+                  "    url: `${baseUrl}/bear`,\r",
+                  "    method: 'GET',\r",
+                  "    header: { 'Content-Type': 'application/json' }\r",
+                  "}, function (errGetAll, resGetAll) {\r",
+                  "        \r",
+                  "    pm.test(\"GET /bear: Статус код 200 OK\", function () {\r",
+                  "        pm.expect(errGetAll).to.be.null;\r",
+                  "        pm.expect(resGetAll).to.have.status(200);\r",
+                  "    });\r",
+                  "\r",
+                  "    const allBears = resGetAll.json();\r",
+                  "\r",
+                  "    // Проверка, что ответ — массив\r",
+                  "    pm.test(\"GET /bear: Ответ является массивом\", function () {\r",
+                  "        pm.expect(Array.isArray(allBears)).to.be.true;\r",
+                  "    });\r",
+                  "\r",
+                  "    // Проверка, что удалённого медведя (bear_id=31) больше нет в массиве\r",
+                  "    pm.test(`GET /bear: Медведь с bear_id=${deletedBearId} отсутствует в списке`, function () {\r",
+                  "        const foundBear = allBears.find(bear => bear.bear_id === deletedBearId);\r",
+                  "        pm.expect(foundBear, `Найден неудалённый медведь с bear_id=${deletedBearId}`).to.be.undefined;\r",
+                  "    });\r",
+                  "\r",
+                  "    // Проверка, что в массиве остались только медведи с id=32 и id=33\r",
+                  "    pm.test(\"GET /bear: Массив содержит только оставшихся медведей (bear_id=32 и bear_id=33)\", function () {\r",
+                  "        const expectedBears = [\r",
+                  "            {\r",
+                  "            \"bear_id\": 32,\r",
+                  "                \"bear_type\": \"POLAR\",\r",
+                  "                \"bear_name\": \"MIKHAIL\",\r",
+                  "                \"bear_age\": 17.5\r",
+                  "            },\r",
+                  "            {\r",
+                  "                \"bear_id\": 33,\r",
+                  "                \"bear_type\": \"BROWN\",\r",
+                  "                \"bear_name\": \"MIKHAIL\",\r",
+                  "                \"bear_age\": 17.5\r",
+                  "            }\r",
+                  "        ];\r",
+                  "            \r",
+                  "        // Сортируем оба массива по bear_id для стабильного сравнения\r",
+                  "        const sortedActual = [...allBears].sort((a, b) => a.bear_id - b.bear_id);\r",
+                  "        const sortedExpected = [...expectedBears].sort((a, b) => a.bear_id - b.bear_id);\r",
+                  "        \r",
+                  "        pm.expect(sortedActual).to.eql(sortedExpected);\r",
+                  "    });\r",
+                  "\r",
+                  "    // Дополнительная проверка количества элементов\r",
+                  "    pm.test(\"GET /bear: Количество оставшихся записей равно 2\", function () {\r",
+                  "        pm.expect(allBears.length).to.eql(2);\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bear/{{bear_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bear",
+                "{{bear_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC [4] - Удаление несуществующего медведя [id = 555]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                  "const deletedBearId = 555;\r",
+                  "\r",
+                  "// 1. Проверка статус кода (Test Case 4)\r",
+                  "var testName = \"DELETE /bear/:id: удаление несуществующего медведя [id = 555]\";\r",
+                  "\r",
+                  "pm.test(\"Test: \" + testName + \" - Статус код 404 Not Found\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "// 2. Проверка тела ответа      \r",
+                  "pm.test(\"Тело ответа содержит корректное сообщение об ошибке.\", function () {\r",
+                  "    const expectedHtml = \"<html><body><h2>404 Not Found</h2></body></html>\";\r",
+                  "    pm.expect(pm.response.text().trim()).to.eql(expectedHtml);\r",
+                  "});\r",
+                  "\r",
+                  "// 3. Дополнительная проверка: GET /bear/ (общая)\r",
+                  "pm.sendRequest({\r",
+                  "    url: `${baseUrl}/bear`,\r",
+                  "    method: 'GET',\r",
+                  "    header: { 'Content-Type': 'application/json' }\r",
+                  "}, function (errGetAll, resGetAll) {\r",
+                  "        \r",
+                  "    pm.test(\"GET /bear: Статус код 200 OK\", function () {\r",
+                  "        pm.expect(errGetAll).to.be.null;\r",
+                  "        pm.expect(resGetAll).to.have.status(200);\r",
+                  "    });\r",
+                  "\r",
+                  "    const allBears = resGetAll.json();\r",
+                  "\r",
+                  "    // Проверка, что ответ — массив\r",
+                  "    pm.test(\"GET /bear: Ответ является массивом\", function () {\r",
+                  "        pm.expect(Array.isArray(allBears)).to.be.true;\r",
+                  "    });\r",
+                  "\r",
+                  "    // Проверка, что медведя (bear_id=555) нет в массиве\r",
+                  "    pm.test(`GET /bear: Медведь с bear_id=${deletedBearId} отсутствует в списке`, function () {\r",
+                  "        const foundBear = allBears.find(bear => bear.bear_id === deletedBearId);\r",
+                  "        pm.expect(foundBear, `Найден неудалённый медведь с bear_id=${deletedBearId}`).to.be.undefined;\r",
+                  "    });\r",
+                  "\r",
+                  "    // Проверка, что в массиве остались только медведи с id=32 и id=3\r",
+                  "    pm.test(\"GET /bear: Массив содержит только оставшихся медведей (bear_id=32 и bear_id=33)\", function () {\r",
+                  "        const expectedBears = [\r",
+                  "            {\r",
+                  "            \"bear_id\": 32,\r",
+                  "                \"bear_type\": \"POLAR\",\r",
+                  "                \"bear_name\": \"MIKHAIL\",\r",
+                  "                \"bear_age\": 17.5\r",
+                  "            },\r",
+                  "            {\r",
+                  "                \"bear_id\": 33,\r",
+                  "                \"bear_type\": \"BROWN\",\r",
+                  "                \"bear_name\": \"MIKHAIL\",\r",
+                  "                \"bear_age\": 17.5\r",
+                  "            }\r",
+                  "        ];\r",
+                  "            \r",
+                  "        // Сортируем оба массива по bear_id для стабильного сравнения\r",
+                  "        const sortedActual = [...allBears].sort((a, b) => a.bear_id - b.bear_id);\r",
+                  "        const sortedExpected = [...expectedBears].sort((a, b) => a.bear_id - b.bear_id);\r",
+                  "        \r",
+                  "        pm.expect(sortedActual).to.eql(sortedExpected);\r",
+                  "    });\r",
+                  "\r",
+                  "    // Дополнительная проверка количества элементов\r",
+                  "    pm.test(\"GET /bear: Количество оставшихся записей равно 2\", function () {\r",
+                  "        pm.expect(allBears.length).to.eql(2);\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bear/555",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bear",
+                "555"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "### DELETE `/bear/:id` — Удалить медведя\n\n- **Метод:** `DELETE`\n    \n- **URL:** `{{baseUrl}}/bear/{{bear_id}}`\n    \n- **Успешный ответ:** `200 OK`, тело: `OK`.\n    \n- **Ошибки:** `404 Not Found` — при повторном или несуществующем ID.\n    \n- **Особенности:** После удаления выполняется `GET /bear` для проверки, что запись исчезла из списка."
+    },
+    {
+      "name": "DELETE /bear",
+      "item": [
+        {
+          "name": "TC [5] - Удаление всех медведей",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                  "\r",
+                  "// 1. Проверка статус кода (Test Case 5)\r",
+                  "var testName = \"DELETE /bear: удаление всех медведей\";\r",
+                  "\r",
+                  "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// 2. Проверка тела ответа\r",
+                  "pm.test(\"DELETE: Тело ответа имеет следующий вид - OK\", function () {\r",
+                  "    pm.expect(pm.response.text().trim()).to.eql(\"OK\");\r",
+                  "});\r",
+                  "\r",
+                  "// 3. Дополнительная проверка: GET /bear/ (общая)\r",
+                  "pm.sendRequest({\r",
+                  "    url: `${baseUrl}/bear`,\r",
+                  "    method: 'GET',\r",
+                  "    header: { 'Content-Type': 'application/json' }\r",
+                  "}, function (errGet, resGet) {\r",
+                  "    \r",
+                  "    pm.test(\"GET /bear: Статус код 200 OK\", function () {\r",
+                  "        pm.expect(errGet).to.be.null;\r",
+                  "        pm.expect(resGet).to.have.status(200);\r",
+                  "    });\r",
+                  "\r",
+                  "    // Проверка, что ответ — пустой массив\r",
+                  "    pm.test(\"GET /bear: Тело ответа содержит пустой JSON-массив []\", function () {\r",
+                  "        const getResponseText = resGet.text().trim();\r",
+                  "        pm.expect(getResponseText).to.eql(\"[]\");\r",
+                  "    });\r",
+                  "\r",
+                  "    // Дополнительно: проверяем, что длина массива равна 0\r",
+                  "    pm.test(\"GET /bear: Количество записей в БД равно 0\", function () {\r",
+                  "        const allBears = resGet.json();\r",
+                  "        pm.expect(Array.isArray(allBears)).to.be.true;\r",
+                  "        pm.expect(allBears.length).to.eql(0);\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bear"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC [1] - Удаление, в БД пусто",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.variables.get(\"baseUrl\") || \"http://localhost:8080\";\r",
+                  "\r",
+                  "// 1. Проверка статус кода (Test Case 1)\r",
+                  "var testName = \"DELETE /bear: при отсутствии записей в БД\";\r",
+                  "\r",
+                  "pm.test(\"Test: \" + testName + \" - Статус код 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// 2. Проверка тела ответа\r",
+                  "pm.test(\"DELETE: Тело ответа имеет следующий вид - OK\", function () {\r",
+                  "    pm.expect(pm.response.text().trim()).to.eql(\"OK\");\r",
+                  "});\r",
+                  "\r",
+                  "// 3. Дополнительная проверка: GET /bear/ (общая)\r",
+                  "pm.sendRequest({\r",
+                  "    url: `${baseUrl}/bear`,\r",
+                  "    method: 'GET',\r",
+                  "    header: { 'Content-Type': 'application/json' }\r",
+                  "}, function (errGet, resGet) {\r",
+                  "    \r",
+                  "    pm.test(\"GET /bear: Статус код 200 OK\", function () {\r",
+                  "        pm.expect(errGet).to.be.null;\r",
+                  "        pm.expect(resGet).to.have.status(200);\r",
+                  "    });\r",
+                  "\r",
+                  "    // Проверка, что ответ — пустой массив\r",
+                  "    pm.test(\"GET /bear: Тело ответа содержит пустой JSON-массив []\", function () {\r",
+                  "        const getResponseText = resGet.text().trim();\r",
+                  "        pm.expect(getResponseText).to.eql(\"[]\");\r",
+                  "    });\r",
+                  "\r",
+                  "    // Дополнительно: проверяем, что длина массива равна 0\r",
+                  "    pm.test(\"GET /bear: Количество записей в БД равно 0\", function () {\r",
+                  "        const allBears = resGet.json();\r",
+                  "        pm.expect(Array.isArray(allBears)).to.be.true;\r",
+                  "        pm.expect(allBears.length).to.eql(0);\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bear"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "### DELETE `/bear` — Удалить всех медведей\n\n- **Метод:** `DELETE`\n    \n- **URL:** `{{baseUrl}}/bear`\n    \n- **Успешный ответ:** `200 OK`, тело: `OK`.\n    \n- **Особенности:** После удаления `GET /bear` должен вернуть `[]`."
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}

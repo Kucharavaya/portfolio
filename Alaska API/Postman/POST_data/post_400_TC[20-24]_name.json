@@ -1,0 +1,32 @@
+[
+	{
+		"testName": "[bear_name Кириллица в верхнем регистре]",
+		"bear_type": "BLACK",
+		"bear_name": "АЛЕКСЕЙ",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_name Числа]",
+		"bear_type": "BLACK",
+		"bear_name": "123456",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_name Спецсимволы]",
+		"bear_type": "BLACK",
+		"bear_name": "~!@#$%^&*()|\/*-+.?,<>;:",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_name Пробел]",
+		"bear_type": "BLACK",
+		"bear_name": " ",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_name Эмодзи]",
+		"bear_type": "BLACK",
+		"bear_name": "🐻",
+		"bear_age": 17.5
+	}
+]

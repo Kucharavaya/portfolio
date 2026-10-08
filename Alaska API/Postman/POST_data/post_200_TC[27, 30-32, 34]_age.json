@@ -1,0 +1,32 @@
+[
+	{
+		"testName": "[bear_age 17]",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 17
+	},
+	{
+		"testName": "[bear_age 0]",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 0
+	},
+	{
+		"testName": "[bear_age 100]",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 100
+	},
+	{
+		"testName": "[bear_age 0.01]",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 0.01
+	},
+	{
+		"testName": "[bear_age 99.99]",
+		"bear_type": "BLACK",
+		"bear_name": "MIKHAIL",
+		"bear_age": 99.99
+	}
+]

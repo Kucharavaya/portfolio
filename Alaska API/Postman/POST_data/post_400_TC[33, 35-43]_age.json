@@ -1,0 +1,62 @@
+[
+	{
+		"testName": "bear_age Десятичное отрицательное число]",
+		"bear_type":"BLACK",
+		"bear_name":"MIKHAIL",
+		"bear_age":-0.01
+	},
+	{ 
+		"testName": "[bear_age Значение после верхней границы]",
+		"bear_type":"BLACK",
+		"bear_name":"MIKHAIL",
+		"bear_age":100.01
+	},
+	{
+		"testName": "[bear_age Количество десятичных знаков]",
+		"bear_type":"BLACK",
+		"bear_name":"MIKHAIL",
+		"bear_age":17.000000005
+	},
+	{
+		"testName": "[bear_age При наличии ведущего нуля]",
+		"bear_type":"BLACK",
+		"bear_name":"MIKHAIL",
+		"bear_age":017.5
+	},
+	{
+		"testName": "[bear_age При наличии ведущего пробела]",
+		"bear_type":"BLACK",
+		"bear_name":"MIKHAIL",
+		"bear_age": 17.5
+	},
+	{
+		"testName": "[bear_age Пробел вместо целой части]",
+		"bear_type":"BLACK",
+		"bear_name":"MIKHAIL",
+		"bear_age":  .5
+	},
+	{
+		"testName": "[bear_age Пробел вместо дробной части]",
+		"bear_type":"BLACK",
+		"bear_name":"MIKHAIL",
+		"bear_age": 17.
+	},
+	{
+		"testName": "[bear_age Пробел внутри значения]",
+		"bear_type":"BLACK",
+		"bear_name":"MIKHAIL",
+		"bear_age": 1 7.5
+	},
+	{
+		"testName": "[bear_age Запятая вместо десятичной точки]",
+		"bear_type":"BLACK",
+		"bear_name":"MIKHAIL",
+		"bear_age": 17,5
+	},
+	{
+		"testName": "[bear_age Строковое значение]",
+		"bear_type":"BLACK",
+		"bear_name":"MIKHAIL",
+		"bear_age":"seventeen"
+	}
+]
