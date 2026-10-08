@@ -1,37 +1,99 @@
-# :clipboard: Примеры Тест-кейсов
+# :clipboard: Чек-лист и Тест-кейсы
 
 ## 📚 Содержание
-- [Excel/Google Sheets](#title1)
-- [TMS/Test IT](#title2)
+- [Чек-лист](#title1)
+- [Excel/Google Sheets](#title2)
+- [TMS/Test IT](#title3)
+
+***
+
+### :memo:<a id="title1"> 1. Чек-лист Alaska API:</a>
+#### 1. `GET /info` (отображение документации )
+1. Проверка отображения документации
 
 
-## 1. <a id="title1">`Excel/Google Sheets`.</a>
+#### 2. `POST /bear` (создание медведя)
+
+ ***2.1. Проверки поля bear_type:***
+
+- Валидными типами (BLACK, POLAR, BROWN, GUMMY)
+- Пустое значение 
+- Отсутствующее поле
+- Недопустимый тип (PANDA) 
+- Тип в нижнем регистре (black)
+- Тип с кириллицей (нижний/верхний регистр) 
+- Тип с (числами/пробелами/спецсимволами)
+ 
+***2.2. Проверки поля bear_name:***
+
+- Отсутствующее поле
+- Пустое значение 
+- Имя (с апострофом, с дефисом, короткое имя, составное имя)
+- Имя кириллицей 
+- Имя с (числами/пробелами/спецсимволами/Emoji) 
+- Одна латинская буква
+- Длинная строка (>2500 символов) 
+
+***2.3. Проверки поля bear_age:***
+
+- Целое число 
+- Отсутствующее поле 
+- Пустое значение
+- Разного возраста (-0.01, 0, 0.01, 17.000000005, 99.99, 100, 100.01)
+- Ведущий ноль в числе (017.5)
+- Пробел (ведущий/вместо целой части/вместо дробной части/внутри числа)
+- Запятая вместо точки (17,5)
+- Строковое значение ("seventeen")
+
+***2.4. Дублирование и валидация JSON:***
+
+- Повторная отправка идентичных данных 
+- Отсутствие значений во всех полях 
+- Пустой JSON ({}) 
+
+#### 3. `GET /bear` (получение всех)
+
+- Пустой список 
+- Заполненный список 
+
+#### 4. `GET /bear/:id` (получение по ID)
+
+- Существующий ID 
+- Несуществующий ID
+
+#### 5. `PUT /bear/:id` (обновление)
+
+- Обновление всех полей для существующего ID 
+- Обновление bear_type на допустимые (POLAR) 
+- Обновление bear_type на недопустимый (PANDA) 
+- Обновление bear_name на допустимые (mikhail - из примера) 
+- Обновление bear_name на число 
+- Обновление bear_age на допустимое число (99.99) 
+- Обновление bear_age на строковое значение 
+- Обновление несуществующего ID 
+
+#### 6. `DELETE /bear` (удаление всех)
+
+- При отсутствии записей 
+- При наличии записей 
+
+#### 7. `DELETE /bear/:id` (удаление по ID)
+
+- Удаление существующего ID
+- Повторное удаление того же ID (уже удален)
+- Удаление несуществующего ID 
+
+***
+
+### :bar_chart:<a id="title2"> 2. Excel/Google Sheets.</a>
 
 > Полный список **_Тест-кейсов_** можно посмотреть на [Google Таблицы (Google Sheets)](https://docs.google.com/spreadsheets/d/1wMe7C5HrXOkhz7pnoibPdRzdBHaX77eA/edit?usp=sharing&ouid=105693084772138040478&rtpof=true&sd=true)
 
----
-
-### `POST /bear` - создать медведя c `[bear_type:BLACK]`
-
-<img width="1441" height="414" alt="image" src="https://github.com/user-attachments/assets/cf575cc1-1488-4857-9bfb-545ad1f0f45e" />
-
-### `GET /bear` - получить заполненный список медведей
-
-<img width="1498" height="591" alt="image" src="https://github.com/user-attachments/assets/b86028b6-189e-4751-b5fd-1c7da9d3e916" />
-
-### `PUT /bear/:id` - обновить `[bear_type]` на допустимые значения (POLAR)
-
-<img width="1548" height="535" alt="image" src="https://github.com/user-attachments/assets/82f6d43c-ce4b-4eed-a241-8e1ddc157430" />
-
-### `DELETE /bear/:id` - удалить существующего медведя по ID
-
-<img width="1548" height="509" alt="image" src="https://github.com/user-attachments/assets/0b8ffdff-6555-4dbd-83c2-d162db70b805" />
-
-## 2. <a id="title2">`TMS/Test IT`.</a>
+### <a id="title3"> 3. TMS/Test IT.</a>
 > Пример списка **_Тест-кейсов_** в Test IT
-<img width="1650" height="731" alt="image" src="https://github.com/user-attachments/assets/0a608f3b-749a-4010-a7eb-b201e6a07136" />
+<img width="1650" height="731" alt="image" src="https://github.com/user-attachments/assets/0a608f3b-749a-4010-a7eb-b201e6a07136" /><br>
+<br>
 
-
-### `POST /bear` - создать медведя c `[bear_type:BLACK]`
-<img width="1826" height="801" alt="image-4" src="https://github.com/user-attachments/assets/2cf0c6b9-60ce-4fa3-a870-1065c91303e9" />
+> `POST /bear` - создать медведя c `[bear_type:BLACK]`
+<img width="1826" height="801" alt="image-4" src="https://github.com/user-attachments/assets/2cf0c6b9-60ce-4fa3-a870-1065c91303e9" /><br>
 
