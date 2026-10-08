@@ -18,7 +18,7 @@
   </thead>
   <tbody>
     <tr>
-      <td align="center">💡 <a href="https://github.com/Kucharavaya/portfolio/tree/main/API%20Testing%20-%20alaska">Case #1 - Alaska API</a></td>
+      <td align="center">💡 <a href="https://github.com/Kucharavaya/portfolio/tree/main/Alaska%20API">Case #1 - Alaska API</a></td>
       <td>Docker, Postman, Excel/Google Sheets, Test IT, JIRA</td>
       <td align="justify">Проведено тестирование <b>REST API</b> сервиса, предоставляющего <b>CRUD</b> интерфейс для управления данными в нем. Выполнено <b>функциональное тестирование</b> всех эндпоинтов API, включая позитивные и негативные сценарии, а также проверки граничных значений. Составлены подробные <b>тест-кейсы</b> на основе <b>чек-листа</b>, охватывающие все эндпоинты. Была создана коллекция <b>Postman</b>. Она позволяет автоматически валидировать ответы сервера, состояние базы данных и обеспечивать изоляцию тестов через механизмы <i>Pre-request Script</i> и <i>Post-condition</i>. Во многих кейсах обнаружены баги (500 ошибки, неинформативные сообщения, автокоррекция значений) и подробно описаны в комментариях. Составлены <b>баг-репорты</b>. </td>
     </tr>
