@@ -10,7 +10,7 @@
 | [`as-is-order.png`](./as-is-order.png)         | AS-IS | Этапы заказа товара              | ✅ готово     |
 | [`as-is-receipt.png`](./as-is-receipt.png)     | AS-IS | Получение товара на склад        | ✅ готово     |
 | [`as-is-placement.png`](./as-is-placement.png) | AS-IS | Размещение товара на складе      | ✅ готово     |
-| [`to-be-receipt.png`](./to-be-receipt.png)     | TO-BE | Приёмка товара с веб-приложением | 🟡 нарисовать |
+| [`to-be-receipt.png`](./to-be-receipt.png)     | TO-BE | Приёмка товара с веб-приложением | 🟡 в разработке |
 
 ## 1. AS-IS: Этапы заключения договора (`as-is-contract.png`)
 
