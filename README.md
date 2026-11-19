@@ -20,7 +20,7 @@
   </thead>
   <tbody>
     <tr>
-      <td align="center">💡  [Warehouse](Warehouse) </td>
+       <td align="center">💡 <a href="https://github.com/Kucharavaya/portfolio/blob/main/Warehouse"> Warehouse </a></td>
       <td>BPMN, MS SQL, JSON</td>
       <td align="justify">Сквозной пет-проект по складскому учёту и движению товарных накладных. Включает <b>BPMN AS-IS/TO-BE</b> процесса приёмки и размещения товара, <b>ER-диаграмму и DDL</b>, <b>требования к API</b> (JSON-примеры), <b>тест-план</b>, <b>чек-лист</b>, <b>тест-кейсы</b>, <b>баг-репорты</b> и <b>SQL-проверки</b> целостности данных. Основан на 13-летнем опыте работы с ТТН, складом и инвентаризациями.</td>
       <td align="center">в разработке</td>
